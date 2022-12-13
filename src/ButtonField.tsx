@@ -1,6 +1,6 @@
-const ButtonTextList = ['Small', 'Medium', 'Large'];
-
 const ButtonField = () => {
+  const ButtonTextList = ['Small', 'Medium', 'Large'];
+
   return (
     <div className="buttons-field">
       {
