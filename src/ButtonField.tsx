@@ -1,20 +1,23 @@
 type ButtonFieldProps = {
-  mapSizes: number[];
-  setMapSize: Function;
+  clickHandler: Function;
 }
 
 const ButtonField = (props: ButtonFieldProps) => {
   const ButtonTextList = ['Small', 'Medium', 'Large'];
   const {
-    mapSizes,
-    setMapSize
+    clickHandler
   } = props
 
   return (
     <div className="buttons-field">
       {
         ButtonTextList.map( (buttonText, index) => (
-          <button key={buttonText} onClick={ () => setMapSize(mapSizes[index]) } >{ buttonText }</button>
+          <button
+            key={buttonText}
+            onClick={ () => clickHandler(index) }
+          >
+            { buttonText }
+          </button>
         ))
       }
     </div>

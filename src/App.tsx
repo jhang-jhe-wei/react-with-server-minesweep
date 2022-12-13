@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import './App.css';
 import Head from './Head';
 import PlayField from './PlayField';
@@ -6,18 +6,17 @@ import ButtonField from './ButtonField';
 import Footer from './Footer';
 
 const App = () => {
-  const MapSizes = [Math.pow(9, 2), Math.pow(16, 2), Math.pow(24, 2)]
-  const [mapSize, setMapSize] = useState<number>(MapSizes[0]);
+  const [mapIndex, setMapIndex] = useState<number>(0);
   const [data, setData] = useState<number[]>([]);
+  const NUMBER_OF_CELL_LIST = useMemo(() => [Math.pow(9, 2), Math.pow(16, 2), Math.pow(24, 2)], [])
   useEffect(()=>{
-    setData(Array(mapSize).fill(0))
-    console.log(mapSize)
-  }, [mapSize])
+    setData(Array(NUMBER_OF_CELL_LIST[mapIndex]).fill(null))
+  }, [mapIndex, NUMBER_OF_CELL_LIST])
 
   return (
     <div className="container">
       <Head/>
-      <ButtonField/>
+      <ButtonField clickHandler={setMapIndex}/>
       <PlayField data={data} />
       <Footer/>
     </div>
