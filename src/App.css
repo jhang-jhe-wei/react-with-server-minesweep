@@ -6,6 +6,7 @@
  --footer-bg-color: #70566D;
  --cell-bg-color: #5D707F;
  --button-color: #70566D;
+ --shadow-color: #07090a;
 }
 
 .container {
@@ -77,14 +78,17 @@
 
 .cell {
   background-color: var(--cell-bg-color);
-  box-shadow: 2px 2px black;
+  box-shadow: 2px 2px var(--shadow-color);
   border-top: 2px white solid;
   border-left: 2px white solid;
 }
 
 .cell-checked {
-  box-shadow: none;
+  box-shadow: inset 2px 2px var(--shadow-color);
   border: none;
+  border-style: inset;
+  border-bottom: 1px white solid;
+  border-right: 1px white solid;
 }
 
 .title {
