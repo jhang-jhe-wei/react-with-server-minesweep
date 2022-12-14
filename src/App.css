@@ -20,8 +20,21 @@
   height: 60%;
   background-color: var(--main-bg-color);
   display: grid;
-  grid-template-columns: auto auto auto auto auto auto auto auto auto;
+}
+
+.grid-cols-9 {
+  grid-template-columns: repeat(9, auto);
   gap: 5px;
+}
+
+.grid-cols-16 {
+  grid-template-columns: repeat(16, auto);
+  gap: 4px;
+}
+
+.grid-cols-24 {
+  grid-template-columns: repeat(24, auto);
+  gap: 3px;
 }
 
 .buttons-field {

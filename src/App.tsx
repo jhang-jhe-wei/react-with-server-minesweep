@@ -16,8 +16,8 @@ const App = () => {
   return (
     <div className="container">
       <Head/>
+      <PlayField data={data} mapIndex={mapIndex}/>
       <ButtonField clickHandler={setMapIndex}/>
-      <PlayField data={data} />
       <Footer/>
     </div>
   );
