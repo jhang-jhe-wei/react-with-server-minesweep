@@ -1,12 +1,14 @@
 type PlayFieldProps = {
   data: number[];
   mapIndex: number;
+  clickHandler: Function;
 }
 
 const PlayField = (props: PlayFieldProps) => {
   const {
     data,
-    mapIndex
+    mapIndex,
+    clickHandler
   } = props;
   const MAP_STYLES = ['grid-cols-9', 'grid-cols-16', 'grid-cols-24']
 
@@ -27,8 +29,16 @@ const PlayField = (props: PlayFieldProps) => {
   return (
     <div className={`play-field ${MAP_STYLES[mapIndex]}`}>
       {
-        data.map(value =>
-          <div className={`cell ${value && getStyleBy(value)}`}></div>
+        data.map((value, index) =>
+        <div
+          key={index}
+          className={`cell ${typeof(value) === 'number' && getStyleBy(value)}`}
+          onClick={() => clickHandler((cells: number[]) => [
+            ...cells.slice(0, index),
+            0,
+            ...cells.slice(index + 1),
+          ])}
+        />
         )
       }
 </div>
