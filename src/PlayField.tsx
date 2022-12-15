@@ -12,16 +12,17 @@ const PlayField = (props: PlayFieldProps) => {
   } = props;
   const MAP_STYLES = ['grid-cols-9', 'grid-cols-16', 'grid-cols-24']
   const getStyleBy = (value:number) => {
-    if(value === 0){
-      return 'cell-checked'
-    }else if(value < 9){
-      return `cell-checked symbol-${value}`
+    if(value === null){
+      return 'cell'
+    }else if(value === 0){
+      return ''
+    }
+    else if(value < 9){
+      return `symbol-${value}`
     }else if(value === 9){
       return 'symbol-flag'
     }else if(value === 10){
-      return 'cell-checked symbol-bomb'
-    }else{
-      return ''
+      return 'symbol-bomb'
     }
   }
 
@@ -34,7 +35,7 @@ const PlayField = (props: PlayFieldProps) => {
         data.map((value, index) =>
         <div
           key={index}
-          className={`cell ${typeof(value) === 'number' && getStyleBy(value)}`}
+          className={`${getStyleBy(value)}`}
           onMouseDown={()=>{
             targetIndex = index;
             clickedAt = Date.now()

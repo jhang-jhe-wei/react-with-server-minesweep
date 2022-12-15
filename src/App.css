@@ -4,7 +4,6 @@
  --main-bg-color: #8797B2;
  --title-bg-color: #ABC8C0;
  --footer-bg-color: #70566D;
- --cell-bg-color: #5D707F;
  --button-color: #70566D;
  --shadow-color: #07090a;
 }
@@ -82,23 +81,10 @@
 }
 
 .cell {
-  background-color: var(--cell-bg-color);
   box-shadow: 3px 3px var(--shadow-color);
   border-top: 2px white solid;
   border-left: 2px white solid;
-  border-right: 2px transparent solid;
-  border-bottom: 2px transparent solid;
 
-}
-
-.cell-checked {
-  box-shadow: inset 3px 3px var(--shadow-color);
-  border: none;
-  border-style: inset;
-  border-top: 2px transparent solid;
-  border-left: 2px transparent solid;
-  border-bottom: 2px white solid;
-  border-right: 2px white solid;
 }
 
 .title {
