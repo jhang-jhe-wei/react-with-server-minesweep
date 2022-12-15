@@ -13,13 +13,14 @@
   width: min(100vw, 55vh);
   height: min(180vw, 100vh);
   margin: 0 auto;
-  background-color: orange;
+  background-color: var(--button-color);
 }
 
 .play-field {
-  width: 100%;
+  width: 99%;
   height: 60%;
   background-color: var(--main-bg-color);
+  margin: 0 auto;
   display: grid;
 }
 
@@ -78,18 +79,22 @@
 
 .cell {
   background-color: var(--cell-bg-color);
-  box-shadow: 2px 2px var(--shadow-color);
+  box-shadow: 3px 3px var(--shadow-color);
   border-top: 2px white solid;
   border-left: 2px white solid;
+  border-right: 2px transparent solid;
+  border-bottom: 2px transparent solid;
+
 }
 
 .cell-checked {
-  box-shadow: inset 2px 2px var(--shadow-color);
+  box-shadow: inset 3px 3px var(--shadow-color);
   border: none;
   border-style: inset;
-  border-bottom: 1px white solid;
-  border-right: 1px white solid;
-  box-sizing: border-box;
+  border-top: 2px transparent solid;
+  border-left: 2px transparent solid;
+  border-bottom: 2px white solid;
+  border-right: 2px white solid;
 }
 
 .title {
