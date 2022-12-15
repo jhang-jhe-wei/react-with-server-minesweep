@@ -40,23 +40,17 @@ const PlayField = (props: PlayFieldProps) => {
             clickedAt = Date.now()
           }}
           onMouseUp={()=>{
-            console.log('Up')
             if(targetIndex === index){
               const duration = Date.now() - clickedAt;
-              if(duration <= 1000){
-                alert('short press')
+              if(duration <= 500){
+                clickHandler(index, 'short')
               }else{
-                alert('long press')
+                clickHandler(index, 'long')
               }
             }
           }}
-          onClick={() => clickHandler((cells: number[]) => [
-            ...cells.slice(0, index),
-            0,
-            ...cells.slice(index + 1),
-          ])}
           onContextMenu={(e)=>{
-            console.log('right click');
+            clickHandler(index, 'right')
             e.preventDefault();
             return false;
           }}
