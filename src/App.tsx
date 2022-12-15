@@ -25,65 +25,80 @@ const App = () => {
     return map;
   }
 
-  const getArroundMinesCount = useCallback((index: number) => {
-    const getAdjacentCoordinates = (x: number, y:number, max:number): number[][] => {
-      // 定義一個空的座標陣列
-      let coords = [];
+  const getAdjacentCoordinates = useCallback((x: number, y:number): [number, number][] => {
+    // 定義一個空的座標陣列
+    const coords: [number, number][] = [];
+    const max = NUMBER_OF_CELLS_IN_A_ROW[mapIndex];
 
-      // 檢查 (x, y-1) 是否在邊界內
-      if (y > 0) {
-        coords.push([x, y-1]);
-      }
-
-      // 檢查 (x, y+1) 是否在邊界內
-      if (y < max) {
-        coords.push([x, y+1]);
-      }
-
-      // 檢查 (x-1, y) 是否在邊界內
-      if (x > 0) {
-        coords.push([x-1, y]);
-      }
-
-      // 檢查 (x+1, y) 是否在邊界內
-      if (x < max) {
-        coords.push([x+1, y]);
-      }
-
-      // 檢查 (x-1, y-1) 是否在邊界內
-      if (x > 0 && y > 0) {
-        coords.push([x-1, y-1]);
-      }
-
-      // 檢查 (x-1, y+1) 是否在邊界內
-      if (x > 0 && y < max) {
-        coords.push([x-1, y+1]);
-      }
-
-      // 檢查 (x+1, y-1) 是否在邊界內
-      if (x < max && y > 0) {
-        coords.push([x+1, y-1]);
-      }
-
-      // 檢查 (x+1, y+1) 是否在邊界內
-      if (x < max && y < max) {
-        coords.push([x+1, y+1]);
-      }
-
-      // 返回座標陣列
-      return coords;
+    // 檢查 (x, y-1) 是否在邊界內
+    if (y > 0) {
+      coords.push([x, y-1]);
     }
 
-    const x = index % NUMBER_OF_CELLS_IN_A_ROW[mapIndex]
-    const y = Math.floor(index / NUMBER_OF_CELLS_IN_A_ROW[mapIndex])
-    const adjacentArray = getAdjacentCoordinates(x, y , NUMBER_OF_CELLS_IN_A_ROW[mapIndex])
+    // 檢查 (x, y+1) 是否在邊界內
+    if (y < max) {
+      coords.push([x, y+1]);
+    }
+
+    // 檢查 (x-1, y) 是否在邊界內
+    if (x > 0) {
+      coords.push([x-1, y]);
+    }
+
+    // 檢查 (x+1, y) 是否在邊界內
+    if (x < max) {
+      coords.push([x+1, y]);
+    }
+
+    // 檢查 (x-1, y-1) 是否在邊界內
+    if (x > 0 && y > 0) {
+      coords.push([x-1, y-1]);
+    }
+
+    // 檢查 (x-1, y+1) 是否在邊界內
+    if (x > 0 && y < max) {
+      coords.push([x-1, y+1]);
+    }
+
+    // 檢查 (x+1, y-1) 是否在邊界內
+    if (x < max && y > 0) {
+      coords.push([x+1, y-1]);
+    }
+
+    // 檢查 (x+1, y+1) 是否在邊界內
+    if (x < max && y < max) {
+      coords.push([x+1, y+1]);
+    }
+
+    // 返回座標陣列
+    return coords;
+  }, [NUMBER_OF_CELLS_IN_A_ROW, mapIndex])
+
+  const indexToCoord = useCallback((index: number): [number, number] => (
+    [
+      index % NUMBER_OF_CELLS_IN_A_ROW[mapIndex],
+      Math.floor(index / NUMBER_OF_CELLS_IN_A_ROW[mapIndex])
+    ]
+  ),
+    [NUMBER_OF_CELLS_IN_A_ROW, mapIndex]
+  )
+
+  const coordToIndex = useCallback((point: [number, number]): number => (
+    point[1] * NUMBER_OF_CELLS_IN_A_ROW[mapIndex] + point[0]
+  ),
+    [NUMBER_OF_CELLS_IN_A_ROW, mapIndex]
+  )
+
+  const getArroundMinesCount = useCallback((index: number) => {
+    const [x, y] = indexToCoord(index)
+    const adjacentArray = getAdjacentCoordinates(x, y)
     let count = 0
     adjacentArray.forEach((point) => {
-      const position = point[1] * NUMBER_OF_CELLS_IN_A_ROW[mapIndex] + point[0]
+      const position = coordToIndex(point)
       if(minesMap[position]) count += 1
     })
     return count
-  }, [NUMBER_OF_CELLS_IN_A_ROW, minesMap, mapIndex])
+  }, [minesMap, getAdjacentCoordinates, indexToCoord, coordToIndex])
 
   const getCellsSize = useCallback((mapIndex: number): number => {
     return Math.pow(NUMBER_OF_CELLS_IN_A_ROW[mapIndex], 2)
