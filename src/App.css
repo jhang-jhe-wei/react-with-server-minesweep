@@ -9,6 +9,10 @@
  --shadow-color: #07090a;
 }
 
+* {
+  box-sizing: border-box;
+}
+
 .container {
   width: min(100vw, 55vh);
   height: min(180vw, 100vh);
