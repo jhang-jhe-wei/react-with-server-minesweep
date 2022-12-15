@@ -12,7 +12,7 @@ const App = () => {
   const [data, setData] = useState<number[]>([]);
   const [minesMap, setMinesMap] = useState<boolean[]>([]);
   const [init, setInit] = useState<boolean>(false);
-  const NUMBER_OF_CELL_LIST = useMemo(() => [Math.pow(9, 2), Math.pow(16, 2), Math.pow(24, 2)], [])
+  const NUMBER_OF_CELLS_IN_A_ROW = useMemo(() => [9, 16, 24], [])
   const randMinesMap = (size: number, avoidIndex: number): boolean[] => {
     const random = (): number => {
       let random = Math.floor(Math.random() * size);
@@ -25,13 +25,20 @@ const App = () => {
     return map;
   }
 
+
+  const getCellsSize = useCallback((mapIndex: number): number => {
+    return Math.pow(NUMBER_OF_CELLS_IN_A_ROW[mapIndex], 2)
+  },
+    [NUMBER_OF_CELLS_IN_A_ROW]
+  )
+
   const clickHandler = (
     index: number,
     event: 'long'| 'short'| 'right'
   ) => {
     console.log(event)
     if(!init){
-      setMinesMap(randMinesMap(NUMBER_OF_CELL_LIST[mapIndex], index))
+      setMinesMap(randMinesMap(getCellsSize(mapIndex), index))
       setInit(true)
     }
     setTargetIndex(index)
@@ -54,8 +61,8 @@ const App = () => {
 
   useEffect(()=>{
     setInit(false)
-    setData(Array(NUMBER_OF_CELL_LIST[mapIndex]).fill(null))
-  }, [mapIndex, NUMBER_OF_CELL_LIST])
+    setData(Array(getCellsSize(mapIndex)).fill(null))
+  }, [mapIndex, NUMBER_OF_CELLS_IN_A_ROW, getCellsSize])
 
   return (
     <div className="container">
