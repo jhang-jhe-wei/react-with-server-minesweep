@@ -22,7 +22,7 @@ const App = () => {
     }
 
     let map = Array(size).fill(false);
-    [ ...Array(NUMBER_OF_MINES) ].forEach(() => map[random()] = true);
+    [ ...Array(NUMBER_OF_CELLS_IN_A_ROW[mapIndex]) ].forEach(() => map[random()] = true);
     return map;
   }
 
