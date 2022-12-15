@@ -122,13 +122,14 @@ const App = () => {
       }
       setTargetIndex(index)
     }else{
-      setData((cells) => (
-        [
+      setData((cells) => {
+        if(cells[index] !== null && cells[index] !== 9) return cells;
+        return [
           ...cells.slice(0, index),
           cells[index] === 9 ? null: 9,
           ...cells.slice(index + 1),
         ]
-      ))
+      })
     }
   }
 
