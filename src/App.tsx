@@ -4,15 +4,19 @@ import Head from './Head';
 import PlayField from './PlayField';
 import ButtonField from './ButtonField';
 import Footer from './Footer';
+import Dialog from './Dialog';
 
 const App = () => {
   const MINE_CODE = 10
   const NO_BOMB_ARROUND = 0
+  const GAME_WIN = 'You Win!'
+  const GAME_LOSE = 'You Lose!'
   const [mapIndex, setMapIndex] = useState<number>(0);
   const [targetIndex, setTargetIndex] = useState<number>();
   const [data, setData] = useState<number[]>([]);
   const [minesMap, setMinesMap] = useState<boolean[]>([]);
   const [init, setInit] = useState<boolean>(false);
+  const [gameStatus, setGameStatus] = useState<string>()
   const NUMBER_OF_CELLS_IN_A_ROW = useMemo(() => [9, 16, 24], [])
   const randMinesMap = (size: number, avoidIndex: number): boolean[] => {
     const random = (): number => {
@@ -127,7 +131,7 @@ const App = () => {
         if(index === targetIndex) return 11;
         return minesMap[index]? MINE_CODE: cell
       }))
-      alert('You lose')
+      setGameStatus(GAME_LOSE);
     }else {
       setData(cells => {
         const tempCells = cells.slice();
@@ -156,7 +160,7 @@ const App = () => {
   useEffect(()=>{
     const count = data.slice().filter(cell => (cell !== null && cell >= 0 && cell <= 8)).length;
     if(count === Math.pow(NUMBER_OF_CELLS_IN_A_ROW[mapIndex], 2) - NUMBER_OF_CELLS_IN_A_ROW[mapIndex]){
-      alert('You win!')
+      setGameStatus(GAME_WIN);
     }
   }, [data, NUMBER_OF_CELLS_IN_A_ROW, mapIndex])
 
@@ -169,7 +173,10 @@ const App = () => {
   return (
     <div className="container">
       <Head/>
-      <PlayField data={data} mapIndex={mapIndex} clickHandler={clickHandler}/>
+      <div className="play-field-container">
+        { gameStatus && <Dialog text={gameStatus} clickHandler={()=>{window.location.reload()}} /> }
+        <PlayField data={data} mapIndex={mapIndex} clickHandler={clickHandler}/>
+      </div>
       <ButtonField clickHandler={setMapIndex}/>
       <Footer/>
     </div>
