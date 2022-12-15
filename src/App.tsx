@@ -121,13 +121,13 @@ const App = () => {
         setInit(true)
       }
       setTargetIndex(index)
-    }else if (event === 'right'){
+    }else{
       setData((cells) => (
         [
-        ...cells.slice(0, index),
+          ...cells.slice(0, index),
           cells[index] === 9 ? null: 9,
-        ...cells.slice(index + 1),
-      ]
+          ...cells.slice(index + 1),
+        ]
       ))
     }
   }
