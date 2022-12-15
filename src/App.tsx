@@ -121,10 +121,12 @@ const App = () => {
 
   useEffect(() => {
     if(targetIndex === undefined) return;
+    // click mine
     if(minesMap[targetIndex]) {
-      setData((cells: number[]) => cells.map((cell, index) => (
-        minesMap[index]? MINE_CODE: cell
-      )))
+      setData((cells: number[]) => cells.map((cell, index) => {
+        if(index === targetIndex) return 11;
+        return minesMap[index]? MINE_CODE: cell
+      }))
     }else {
       setData(cells => {
         const tempCells = cells.slice();

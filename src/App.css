@@ -162,3 +162,7 @@
   background-size: cover;
   background-position-x: 99%;
 }
+
+.bg-red {
+  background-color: red;
+}

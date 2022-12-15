@@ -23,6 +23,8 @@ const PlayField = (props: PlayFieldProps) => {
       return 'symbol-flag'
     }else if(value === 10){
       return 'symbol-bomb'
+    }else if(value === 11){
+      return 'symbol-bomb bg-red'
     }
   }
 
