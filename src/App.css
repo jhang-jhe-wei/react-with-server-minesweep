@@ -89,6 +89,7 @@
   border-style: inset;
   border-bottom: 1px white solid;
   border-right: 1px white solid;
+  box-sizing: border-box;
 }
 
 .title {
