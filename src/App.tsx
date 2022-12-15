@@ -127,6 +127,7 @@ const App = () => {
         if(index === targetIndex) return 11;
         return minesMap[index]? MINE_CODE: cell
       }))
+      alert('You lose')
     }else {
       setData(cells => {
         const tempCells = cells.slice();
@@ -151,6 +152,13 @@ const App = () => {
       })
     }
   }, [targetIndex, minesMap, getArroundMinesCount, coordToIndex, getAdjacentCoordinates, getCellsSize, indexToCoord, mapIndex])
+
+  useEffect(()=>{
+    const count = data.slice().filter(cell => (cell !== null && cell >= 0 && cell <= 8)).length;
+    if(count === Math.pow(NUMBER_OF_CELLS_IN_A_ROW[mapIndex], 2) - NUMBER_OF_CELLS_IN_A_ROW[mapIndex]){
+      alert('You win!')
+    }
+  }, [data, NUMBER_OF_CELLS_IN_A_ROW, mapIndex])
 
   useEffect(()=>{
     setTargetIndex(undefined)
