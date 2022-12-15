@@ -40,6 +40,9 @@ const App = () => {
   useEffect(() => {
     if(targetIndex === undefined) return;
     if(minesMap[targetIndex]) {
+      setData((cells: number[]) => cells.map((cell, index) => (
+        minesMap[index]? 10: cell
+      )))
     }else {
       setData((cells: number[]) => [
         ...cells.slice(0, targetIndex),
