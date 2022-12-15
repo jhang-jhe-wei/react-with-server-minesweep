@@ -8,6 +8,7 @@ import Footer from './Footer';
 const App = () => {
   const NUMBER_OF_MINES = 10
   const [mapIndex, setMapIndex] = useState<number>(0);
+  const [targetIndex, setTargetIndex] = useState<number>();
   const [data, setData] = useState<number[]>([]);
   const [minesMap, setMinesMap] = useState<boolean[]>([]);
   const [init, setInit] = useState<boolean>(false);
@@ -33,7 +34,20 @@ const App = () => {
       setMinesMap(randMinesMap(NUMBER_OF_CELL_LIST[mapIndex], index))
       setInit(true)
     }
+    setTargetIndex(index)
   }
+
+  useEffect(() => {
+    if(targetIndex === undefined) return;
+    if(minesMap[targetIndex]) {
+    }else {
+      setData((cells: number[]) => [
+        ...cells.slice(0, targetIndex),
+        0,
+        ...cells.slice(targetIndex + 1),
+      ])
+    }
+  }, [targetIndex, minesMap])
 
   useEffect(()=>{
     setInit(false)
