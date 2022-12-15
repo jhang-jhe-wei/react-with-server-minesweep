@@ -7,6 +7,7 @@ import Footer from './Footer';
 
 const App = () => {
   const NUMBER_OF_MINES = 10
+  const NO_BOMB_ARROUND = 0
   const [mapIndex, setMapIndex] = useState<number>(0);
   const [targetIndex, setTargetIndex] = useState<number>();
   const [data, setData] = useState<number[]>([]);
@@ -125,13 +126,29 @@ const App = () => {
         minesMap[index]? 10: cell
       )))
     }else {
-      setData((cells: number[]) => [
-        ...cells.slice(0, targetIndex),
-        getArroundMinesCount(targetIndex),
-        ...cells.slice(targetIndex + 1),
-      ])
+      setData(cells => {
+        const tempCells = cells.slice();
+        const scannedList = Array(cells.length).fill(false)
+        const recursiveSweep = (index: number) => {
+          console.log(index)
+          if(scannedList[index]) return;
+          const result = getArroundMinesCount(index);
+          scannedList[index] = true;
+          if(result !== NO_BOMB_ARROUND){
+            tempCells[index] = result;
+            return;
+          }
+          tempCells[index] = NO_BOMB_ARROUND;
+          const coords = getAdjacentCoordinates(...indexToCoord(index))
+          coords.forEach(coord => {
+            recursiveSweep(coordToIndex(coord))
+          })
+        }
+        recursiveSweep(targetIndex)
+        return tempCells
+      })
     }
-  }, [targetIndex, minesMap, getArroundMinesCount])
+  }, [targetIndex, minesMap, getArroundMinesCount, coordToIndex, getAdjacentCoordinates, getCellsSize, indexToCoord, mapIndex])
 
   useEffect(()=>{
     setTargetIndex(undefined)
