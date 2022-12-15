@@ -6,7 +6,7 @@ import ButtonField from './ButtonField';
 import Footer from './Footer';
 
 const App = () => {
-  const NUMBER_OF_MINES = 10
+  const MINE_CODE = 10
   const NO_BOMB_ARROUND = 0
   const [mapIndex, setMapIndex] = useState<number>(0);
   const [targetIndex, setTargetIndex] = useState<number>();
@@ -123,7 +123,7 @@ const App = () => {
     if(targetIndex === undefined) return;
     if(minesMap[targetIndex]) {
       setData((cells: number[]) => cells.map((cell, index) => (
-        minesMap[index]? 10: cell
+        minesMap[index]? MINE_CODE: cell
       )))
     }else {
       setData(cells => {
