@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useCallback } from 'react';
 import './App.css';
 import Head from './Head';
 import PlayField from './PlayField';
@@ -25,6 +25,65 @@ const App = () => {
     return map;
   }
 
+  const getArroundMinesCount = useCallback((index: number) => {
+    const getAdjacentCoordinates = (x: number, y:number, max:number): number[][] => {
+      // 定義一個空的座標陣列
+      let coords = [];
+
+      // 檢查 (x, y-1) 是否在邊界內
+      if (y > 0) {
+        coords.push([x, y-1]);
+      }
+
+      // 檢查 (x, y+1) 是否在邊界內
+      if (y < max) {
+        coords.push([x, y+1]);
+      }
+
+      // 檢查 (x-1, y) 是否在邊界內
+      if (x > 0) {
+        coords.push([x-1, y]);
+      }
+
+      // 檢查 (x+1, y) 是否在邊界內
+      if (x < max) {
+        coords.push([x+1, y]);
+      }
+
+      // 檢查 (x-1, y-1) 是否在邊界內
+      if (x > 0 && y > 0) {
+        coords.push([x-1, y-1]);
+      }
+
+      // 檢查 (x-1, y+1) 是否在邊界內
+      if (x > 0 && y < max) {
+        coords.push([x-1, y+1]);
+      }
+
+      // 檢查 (x+1, y-1) 是否在邊界內
+      if (x < max && y > 0) {
+        coords.push([x+1, y-1]);
+      }
+
+      // 檢查 (x+1, y+1) 是否在邊界內
+      if (x < max && y < max) {
+        coords.push([x+1, y+1]);
+      }
+
+      // 返回座標陣列
+      return coords;
+    }
+
+    const x = index % NUMBER_OF_CELLS_IN_A_ROW[mapIndex]
+    const y = Math.floor(index / NUMBER_OF_CELLS_IN_A_ROW[mapIndex])
+    const adjacentArray = getAdjacentCoordinates(x, y , NUMBER_OF_CELLS_IN_A_ROW[mapIndex])
+    let count = 0
+    adjacentArray.forEach((point) => {
+      const position = point[1] * NUMBER_OF_CELLS_IN_A_ROW[mapIndex] + point[0]
+      if(minesMap[position]) count += 1
+    })
+    return count
+  }, [NUMBER_OF_CELLS_IN_A_ROW, minesMap, mapIndex])
 
   const getCellsSize = useCallback((mapIndex: number): number => {
     return Math.pow(NUMBER_OF_CELLS_IN_A_ROW[mapIndex], 2)
@@ -53,13 +112,14 @@ const App = () => {
     }else {
       setData((cells: number[]) => [
         ...cells.slice(0, targetIndex),
-        0,
+        getArroundMinesCount(targetIndex),
         ...cells.slice(targetIndex + 1),
       ])
     }
-  }, [targetIndex, minesMap])
+  }, [targetIndex, minesMap, getArroundMinesCount])
 
   useEffect(()=>{
+    setTargetIndex(undefined)
     setInit(false)
     setData(Array(getCellsSize(mapIndex)).fill(null))
   }, [mapIndex, NUMBER_OF_CELLS_IN_A_ROW, getCellsSize])
