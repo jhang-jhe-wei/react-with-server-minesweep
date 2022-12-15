@@ -13,7 +13,7 @@ const App = () => {
   const GAME_LOSE = 'You Lose!'
   const [mapIndex, setMapIndex] = useState<number>(0);
   const [targetIndex, setTargetIndex] = useState<number>();
-  const [data, setData] = useState<number[]>([]);
+  const [data, setData] = useState<(number|null)[]>([]);
   const [minesMap, setMinesMap] = useState<boolean[]>([]);
   const [init, setInit] = useState<boolean>(false);
   const [gameStatus, setGameStatus] = useState<string>()
@@ -115,19 +115,28 @@ const App = () => {
     index: number,
     event: 'long'| 'short'| 'right'
   ) => {
-    console.log(event)
-    if(!init){
-      setMinesMap(randMinesMap(getCellsSize(mapIndex), index))
-      setInit(true)
+    if(event === 'short') {
+      if(!init){
+        setMinesMap(randMinesMap(getCellsSize(mapIndex), index))
+        setInit(true)
+      }
+      setTargetIndex(index)
+    }else if (event === 'right'){
+      setData((cells) => (
+        [
+        ...cells.slice(0, index),
+          cells[index] === 9 ? null: 9,
+        ...cells.slice(index + 1),
+      ]
+      ))
     }
-    setTargetIndex(index)
   }
 
   useEffect(() => {
     if(targetIndex === undefined) return;
     // click mine
     if(minesMap[targetIndex]) {
-      setData((cells: number[]) => cells.map((cell, index) => {
+      setData((cells) => cells.map((cell, index) => {
         if(index === targetIndex) return 11;
         return minesMap[index]? MINE_CODE: cell
       }))
@@ -137,7 +146,6 @@ const App = () => {
         const tempCells = cells.slice();
         const scannedList = Array(cells.length).fill(false)
         const recursiveSweep = (index: number) => {
-          console.log(index)
           if(scannedList[index]) return;
           const result = getArroundMinesCount(index);
           scannedList[index] = true;

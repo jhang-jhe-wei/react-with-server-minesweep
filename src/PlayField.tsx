@@ -1,5 +1,5 @@
 type PlayFieldProps = {
-  data: number[];
+  data: (number|null)[];
   mapIndex: number;
   clickHandler: Function;
 }
@@ -11,7 +11,7 @@ const PlayField = (props: PlayFieldProps) => {
     clickHandler
   } = props;
   const MAP_STYLES = ['grid-cols-9', 'grid-cols-16', 'grid-cols-24']
-  const getStyleBy = (value:number) => {
+  const getStyleBy = (value:number| null) => {
     if(value === null){
       return 'cell'
     }else if(value === 0){
