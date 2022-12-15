@@ -28,7 +28,7 @@ const App = () => {
   const getAdjacentCoordinates = useCallback((x: number, y:number): [number, number][] => {
     // 定義一個空的座標陣列
     const coords: [number, number][] = [];
-    const max = NUMBER_OF_CELLS_IN_A_ROW[mapIndex];
+    const max = NUMBER_OF_CELLS_IN_A_ROW[mapIndex] - 1;
 
     // 檢查 (x, y-1) 是否在邊界內
     if (y > 0) {
