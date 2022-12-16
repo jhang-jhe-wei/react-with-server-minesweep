@@ -77,6 +77,10 @@ const indexToCoord = (index: number, numberOfCellsInARow: number): [number, numb
   ]
 )
 
+const coordToIndex = (point: [number, number], numberOfCellsInARow: number): number => (
+  point[1] * numberOfCellsInARow + point[0]
+)
+
 const App = () => {
   const [mapIndex, setMapIndex] = useState<number>(0);
   const [targetIndex, setTargetIndex] = useState<number>();
@@ -88,22 +92,16 @@ const App = () => {
   const maxIndexOfRow = useMemo(() => NUMBER_OF_CELLS_IN_A_ROW[mapIndex] - 1, [mapIndex])
   const numberOfCellsInARow = useMemo(() => NUMBER_OF_CELLS_IN_A_ROW[mapIndex], [mapIndex])
 
-  const coordToIndex = useCallback((point: [number, number]): number => (
-    point[1] * NUMBER_OF_CELLS_IN_A_ROW[mapIndex] + point[0]
-  ),
-    [mapIndex]
-  )
-
   const getArroundMinesCount = useCallback((index: number) => {
     const [x, y] = indexToCoord(index, numberOfCellsInARow)
     const adjacentArray = getAdjacentCoordinates(x, y, maxIndexOfRow)
     let count = 0
     adjacentArray.forEach((point) => {
-      const position = coordToIndex(point)
+      const position = coordToIndex(point, numberOfCellsInARow)
       if(minesMap[position]) count += 1
     })
     return count
-  }, [minesMap, coordToIndex, maxIndexOfRow, numberOfCellsInARow])
+  }, [minesMap, maxIndexOfRow, numberOfCellsInARow])
 
   const clickHandler = (
     index: number,
@@ -151,14 +149,14 @@ const App = () => {
           tempCells[index] = NO_BOMB_ARROUND;
           const coords = getAdjacentCoordinates(...indexToCoord(index, numberOfCellsInARow), maxIndexOfRow)
           coords.forEach(coord => {
-            recursiveSweep(coordToIndex(coord))
+            recursiveSweep(coordToIndex(coord, numberOfCellsInARow))
           })
         }
         recursiveSweep(targetIndex)
         return tempCells
       })
     }
-  }, [targetIndex, minesMap, getArroundMinesCount, coordToIndex, mapIndex, maxIndexOfRow, numberOfCellsInARow])
+  }, [targetIndex, minesMap, getArroundMinesCount, mapIndex, maxIndexOfRow, numberOfCellsInARow])
 
   useEffect(()=>{
     const count = data.slice().filter(cell => (cell !== null && cell >= 0 && cell <= 8)).length;
