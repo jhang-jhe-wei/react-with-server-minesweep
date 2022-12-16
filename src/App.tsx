@@ -91,11 +91,10 @@ const App = () => {
   }, [targetIndex, minesMap, getArroundMinesCount, mapIndex, maxIndexOfRow, numberOfCellsInARow])
 
   useEffect(()=>{
-    const count = data.slice().filter(cell => (cell !== null && cell >= 0 && cell <= 8)).length;
-    if(count === Math.pow(NUMBER_OF_CELLS_IN_A_ROW[mapIndex], 2) - NUMBER_OF_CELLS_IN_A_ROW[mapIndex]){
-      setGameStatus(GAME_WIN);
-    }
-  }, [data, mapIndex])
+    const uncoveredCellsCount = data.slice().filter(cell => (cell !== COVERD_CODE && cell >= 0 && cell <= 8)).length;
+    const bombCount = numberOfCellsInARow;
+    if(uncoveredCellsCount === cellsSize - bombCount) setGameStatus(GAME_WIN);
+  }, [data, cellsSize, numberOfCellsInARow])
 
   useEffect(()=>{
     setTargetIndex(undefined)
