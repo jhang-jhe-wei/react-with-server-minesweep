@@ -1,5 +1,4 @@
 import { useState, useEffect, useMemo, useCallback } from 'react';
-import './App.css';
 import Head from './components/Head';
 import PlayField from './components/PlayField';
 import ButtonField from './components/ButtonField';
