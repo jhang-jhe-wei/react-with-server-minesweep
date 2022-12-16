@@ -1,10 +1,10 @@
 import { useState, useEffect, useMemo, useCallback } from 'react';
 import './App.css';
-import Head from './Head';
-import PlayField from './PlayField';
-import ButtonField from './ButtonField';
-import Footer from './Footer';
-import Dialog from './Dialog';
+import Head from './components/Head';
+import PlayField from './components/PlayField';
+import ButtonField from './components/ButtonField';
+import Footer from './components/Footer';
+import Dialog from './components/Dialog';
 
 const App = () => {
   const MINE_CODE = 10
