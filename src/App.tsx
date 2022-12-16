@@ -9,6 +9,8 @@ import { NUMBER_OF_CELLS_IN_A_ROW } from './constants';
 
 const MINE_CODE = 10
 const NO_BOMB_ARROUND = 0
+const FLAG_CODE = 9
+const COVERD_CODE = null
 const GAME_WIN = 'You Win!'
 const GAME_LOSE = 'You Lose!'
 const App = () => {
@@ -45,10 +47,10 @@ const App = () => {
       setTargetIndex(index)
     }else{
       setData((cells) => {
-        if(cells[index] !== null && cells[index] !== 9) return cells;
+        if(cells[index] !== COVERD_CODE && cells[index] !== FLAG_CODE) return cells;
         return [
           ...cells.slice(0, index),
-          cells[index] === 9 ? null: 9,
+          cells[index] === FLAG_CODE ? COVERD_CODE: FLAG_CODE,
           ...cells.slice(index + 1),
         ]
       })
