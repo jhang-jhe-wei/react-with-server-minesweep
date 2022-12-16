@@ -20,7 +20,7 @@ const PlayField = (props: PlayFieldProps) => {
     else if(value < 9){
       return `symbol-${value}`
     }else if(value === 9){
-      return 'symbol-flag'
+      return 'cell symbol-flag'
     }else if(value === 10){
       return 'symbol-bomb'
     }else if(value === 11){
