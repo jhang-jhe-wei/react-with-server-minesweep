@@ -5,7 +5,7 @@ import ButtonField from './components/ButtonField';
 import Footer from './components/Footer';
 import Dialog from './components/Dialog';
 import { randMinesMap, indexToCoord, getAdjacentCoordinates, coordToIndex } from './functions';
-import { NUMBER_OF_CELLS_IN_A_ROW } from './constants';
+import { NUMBER_OF_CELLS_IN_A_ROW } from './data/constants';
 
 const MINE_CODE = 10
 const NO_BOMB_ARROUND = 0

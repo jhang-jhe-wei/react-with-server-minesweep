@@ -1,4 +1,4 @@
-import { NUMBER_OF_CELLS_IN_A_ROW } from './constants';
+import { NUMBER_OF_CELLS_IN_A_ROW } from './data/constants';
 
 export const randMinesMap = (mapIndex:number, size: number, avoidIndex: number): boolean[] => {
   const random = (): number => {
