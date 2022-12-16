@@ -22,19 +22,9 @@ const randMinesMap = (mapIndex:number, size: number, avoidIndex: number): boolea
   return map;
 }
 
-const App = () => {
-  const [mapIndex, setMapIndex] = useState<number>(0);
-  const [targetIndex, setTargetIndex] = useState<number>();
-  const [data, setData] = useState<(number|null)[]>([]);
-  const [minesMap, setMinesMap] = useState<boolean[]>([]);
-  const [init, setInit] = useState<boolean>(false);
-  const [gameStatus, setGameStatus] = useState<string>()
-  const cellsSize = useMemo(() => Math.pow(NUMBER_OF_CELLS_IN_A_ROW[mapIndex], 2), [mapIndex])
-
-  const getAdjacentCoordinates = useCallback((x: number, y:number): [number, number][] => {
+const getAdjacentCoordinates = (x: number, y:number, max:number): [number, number][] => {
     // 定義一個空的座標陣列
     const coords: [number, number][] = [];
-    const max = NUMBER_OF_CELLS_IN_A_ROW[mapIndex] - 1;
 
     // 檢查 (x, y-1) 是否在邊界內
     if (y > 0) {
@@ -78,7 +68,17 @@ const App = () => {
 
     // 返回座標陣列
     return coords;
-  }, [mapIndex])
+  }
+
+const App = () => {
+  const [mapIndex, setMapIndex] = useState<number>(0);
+  const [targetIndex, setTargetIndex] = useState<number>();
+  const [data, setData] = useState<(number|null)[]>([]);
+  const [minesMap, setMinesMap] = useState<boolean[]>([]);
+  const [init, setInit] = useState<boolean>(false);
+  const [gameStatus, setGameStatus] = useState<string>()
+  const cellsSize = useMemo(() => Math.pow(NUMBER_OF_CELLS_IN_A_ROW[mapIndex], 2), [mapIndex])
+  const maxIndexOfRow = useMemo(() => NUMBER_OF_CELLS_IN_A_ROW[mapIndex] - 1, [mapIndex])
 
   const indexToCoord = useCallback((index: number): [number, number] => (
     [
@@ -97,14 +97,14 @@ const App = () => {
 
   const getArroundMinesCount = useCallback((index: number) => {
     const [x, y] = indexToCoord(index)
-    const adjacentArray = getAdjacentCoordinates(x, y)
+    const adjacentArray = getAdjacentCoordinates(x, y, maxIndexOfRow)
     let count = 0
     adjacentArray.forEach((point) => {
       const position = coordToIndex(point)
       if(minesMap[position]) count += 1
     })
     return count
-  }, [minesMap, getAdjacentCoordinates, indexToCoord, coordToIndex])
+  }, [minesMap, indexToCoord, coordToIndex, maxIndexOfRow])
 
   const clickHandler = (
     index: number,
@@ -150,7 +150,7 @@ const App = () => {
             return;
           }
           tempCells[index] = NO_BOMB_ARROUND;
-          const coords = getAdjacentCoordinates(...indexToCoord(index))
+          const coords = getAdjacentCoordinates(...indexToCoord(index), maxIndexOfRow)
           coords.forEach(coord => {
             recursiveSweep(coordToIndex(coord))
           })
@@ -159,7 +159,7 @@ const App = () => {
         return tempCells
       })
     }
-  }, [targetIndex, minesMap, getArroundMinesCount, coordToIndex, getAdjacentCoordinates, indexToCoord, mapIndex])
+  }, [targetIndex, minesMap, getArroundMinesCount, coordToIndex, indexToCoord, mapIndex, maxIndexOfRow])
 
   useEffect(()=>{
     const count = data.slice().filter(cell => (cell !== null && cell >= 0 && cell <= 8)).length;
