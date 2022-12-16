@@ -10,6 +10,17 @@ const NO_BOMB_ARROUND = 0
 const GAME_WIN = 'You Win!'
 const GAME_LOSE = 'You Lose!'
 const NUMBER_OF_CELLS_IN_A_ROW = [9, 16, 24]
+const randMinesMap = (mapIndex:number, size: number, avoidIndex: number): boolean[] => {
+  const random = (): number => {
+    let random = Math.floor(Math.random() * size);
+    while(random === avoidIndex) random = Math.floor(Math.random() * size);
+    return random;
+  }
+
+  let map = Array(size).fill(false);
+  [ ...Array(NUMBER_OF_CELLS_IN_A_ROW[mapIndex]) ].forEach(() => map[random()] = true);
+  return map;
+}
 
 const App = () => {
   const [mapIndex, setMapIndex] = useState<number>(0);
@@ -18,17 +29,6 @@ const App = () => {
   const [minesMap, setMinesMap] = useState<boolean[]>([]);
   const [init, setInit] = useState<boolean>(false);
   const [gameStatus, setGameStatus] = useState<string>()
-  const randMinesMap = (size: number, avoidIndex: number): boolean[] => {
-    const random = (): number => {
-      let random = Math.floor(Math.random() * size);
-      while(random === avoidIndex) random = Math.floor(Math.random() * size);
-      return random;
-    }
-
-    let map = Array(size).fill(false);
-    [ ...Array(NUMBER_OF_CELLS_IN_A_ROW[mapIndex]) ].forEach(() => map[random()] = true);
-    return map;
-  }
 
   const getAdjacentCoordinates = useCallback((x: number, y:number): [number, number][] => {
     // 定義一個空的座標陣列
