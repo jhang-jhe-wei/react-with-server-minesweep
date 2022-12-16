@@ -8,7 +8,7 @@ import { randMinesMap, indexToCoord, getAdjacentCoordinates, coordToIndex } from
 import { NUMBER_OF_CELLS_IN_A_ROW } from './data/constants';
 
 const MINE_CODE = 10
-const NO_BOMB_ARROUND = 0
+const NO_BOMB_ARROUND_CODE = 0
 const FLAG_CODE = 9
 const COVERD_CODE = null
 const GAME_WIN = 'You Win!'
@@ -74,11 +74,11 @@ const App = () => {
           if(scannedList[index]) return;
           const result = getArroundMinesCount(index);
           scannedList[index] = true;
-          if(result !== NO_BOMB_ARROUND){
+          if(result !== NO_BOMB_ARROUND_CODE){
             tempCells[index] = result;
             return;
           }
-          tempCells[index] = NO_BOMB_ARROUND;
+          tempCells[index] = NO_BOMB_ARROUND_CODE;
           const coords = getAdjacentCoordinates(...indexToCoord(index, numberOfCellsInARow), maxIndexOfRow)
           coords.forEach(coord => {
             recursiveSweep(coordToIndex(coord, numberOfCellsInARow))
