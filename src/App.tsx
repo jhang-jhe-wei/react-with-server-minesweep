@@ -101,7 +101,7 @@ const App = () => {
     setTargetIndex(undefined)
     setInit(false)
     setData(Array(cellsSize).fill(null))
-  }, [mapIndex, cellsSize])
+  }, [cellsSize])
 
   return (
     <div className="container">
