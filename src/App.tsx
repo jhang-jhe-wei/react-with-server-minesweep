@@ -8,6 +8,7 @@ import { randMinesMap, indexToCoord, getAdjacentCoordinates, coordToIndex } from
 import { NUMBER_OF_CELLS_IN_A_ROW } from './data/constants';
 
 const MINE_CODE = 10
+const HIT_MINE_CODE = 11
 const NO_BOMB_ARROUND_CODE = 0
 const FLAG_CODE = 9
 const COVERD_CODE = null
@@ -59,14 +60,15 @@ const App = () => {
 
   useEffect(() => {
     if(targetIndex === undefined) return;
-    // click mine
-    if(minesMap[targetIndex]) {
+    const checkHitMine = () => minesMap[targetIndex];
+    const gameOver = () => {
       setData((cells) => cells.map((cell, index) => {
-        if(index === targetIndex) return 11;
+        if(index === targetIndex) return HIT_MINE_CODE;
         return minesMap[index]? MINE_CODE: cell
       }))
       setGameStatus(GAME_LOSE);
-    }else {
+    }
+    const sweep = () => {
       setData(cells => {
         const tempCells = cells.slice();
         const scannedList = Array(cells.length).fill(false)
@@ -87,6 +89,12 @@ const App = () => {
         recursiveSweep(targetIndex)
         return tempCells
       })
+    }
+
+    if(checkHitMine()){
+      gameOver()
+    }else{
+      sweep()
     }
   }, [targetIndex, minesMap, getArroundMinesCount, mapIndex, maxIndexOfRow, numberOfCellsInARow])
 
