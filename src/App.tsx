@@ -20,7 +20,7 @@ const App = () => {
   const [minesMap, setMinesMap] = useState<boolean[]>([]);
   const [init, setInit] = useState<boolean>(false);
   const [gameStatus, setGameStatus] = useState<string>()
-  const cellsSize = useMemo(() => Math.pow(NUMBER_OF_CELLS_IN_A_ROW[mapIndex], 2), [mapIndex])
+  const totalCellsCount = useMemo(() => Math.pow(NUMBER_OF_CELLS_IN_A_ROW[mapIndex], 2), [mapIndex])
   const maxIndexOfRow = useMemo(() => NUMBER_OF_CELLS_IN_A_ROW[mapIndex] - 1, [mapIndex])
   const numberOfCellsInARow = useMemo(() => NUMBER_OF_CELLS_IN_A_ROW[mapIndex], [mapIndex])
 
@@ -41,7 +41,7 @@ const App = () => {
   ) => {
     if(event === 'short') {
       if(!init){
-        setMinesMap(randMinesMap(mapIndex, cellsSize, index))
+        setMinesMap(randMinesMap(mapIndex, totalCellsCount, index))
         setInit(true)
       }
       setTargetIndex(index)
@@ -93,14 +93,14 @@ const App = () => {
   useEffect(()=>{
     const uncoveredCellsCount = data.slice().filter(cell => (cell !== COVERD_CODE && cell >= 0 && cell <= 8)).length;
     const bombCount = numberOfCellsInARow;
-    if(uncoveredCellsCount === cellsSize - bombCount) setGameStatus(GAME_WIN);
-  }, [data, cellsSize, numberOfCellsInARow])
+    if(uncoveredCellsCount === totalCellsCount - bombCount) setGameStatus(GAME_WIN);
+  }, [data, totalCellsCount, numberOfCellsInARow])
 
   useEffect(()=>{
     setTargetIndex(undefined)
     setInit(false)
-    setData(Array(cellsSize).fill(null))
-  }, [cellsSize])
+    setData(Array(totalCellsCount).fill(null))
+  }, [totalCellsCount])
 
   return (
     <div className="container">
