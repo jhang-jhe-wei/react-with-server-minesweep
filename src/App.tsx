@@ -70,6 +70,13 @@ const getAdjacentCoordinates = (x: number, y:number, max:number): [number, numbe
     return coords;
   }
 
+const indexToCoord = (index: number, numberOfCellsInARow: number): [number, number] => (
+  [
+    index % numberOfCellsInARow,
+    Math.floor(index / numberOfCellsInARow)
+  ]
+)
+
 const App = () => {
   const [mapIndex, setMapIndex] = useState<number>(0);
   const [targetIndex, setTargetIndex] = useState<number>();
@@ -79,15 +86,7 @@ const App = () => {
   const [gameStatus, setGameStatus] = useState<string>()
   const cellsSize = useMemo(() => Math.pow(NUMBER_OF_CELLS_IN_A_ROW[mapIndex], 2), [mapIndex])
   const maxIndexOfRow = useMemo(() => NUMBER_OF_CELLS_IN_A_ROW[mapIndex] - 1, [mapIndex])
-
-  const indexToCoord = useCallback((index: number): [number, number] => (
-    [
-      index % NUMBER_OF_CELLS_IN_A_ROW[mapIndex],
-      Math.floor(index / NUMBER_OF_CELLS_IN_A_ROW[mapIndex])
-    ]
-  ),
-    [mapIndex]
-  )
+  const numberOfCellsInARow = useMemo(() => NUMBER_OF_CELLS_IN_A_ROW[mapIndex], [mapIndex])
 
   const coordToIndex = useCallback((point: [number, number]): number => (
     point[1] * NUMBER_OF_CELLS_IN_A_ROW[mapIndex] + point[0]
@@ -96,7 +95,7 @@ const App = () => {
   )
 
   const getArroundMinesCount = useCallback((index: number) => {
-    const [x, y] = indexToCoord(index)
+    const [x, y] = indexToCoord(index, numberOfCellsInARow)
     const adjacentArray = getAdjacentCoordinates(x, y, maxIndexOfRow)
     let count = 0
     adjacentArray.forEach((point) => {
@@ -104,7 +103,7 @@ const App = () => {
       if(minesMap[position]) count += 1
     })
     return count
-  }, [minesMap, indexToCoord, coordToIndex, maxIndexOfRow])
+  }, [minesMap, coordToIndex, maxIndexOfRow, numberOfCellsInARow])
 
   const clickHandler = (
     index: number,
@@ -150,7 +149,7 @@ const App = () => {
             return;
           }
           tempCells[index] = NO_BOMB_ARROUND;
-          const coords = getAdjacentCoordinates(...indexToCoord(index), maxIndexOfRow)
+          const coords = getAdjacentCoordinates(...indexToCoord(index, numberOfCellsInARow), maxIndexOfRow)
           coords.forEach(coord => {
             recursiveSweep(coordToIndex(coord))
           })
@@ -159,7 +158,7 @@ const App = () => {
         return tempCells
       })
     }
-  }, [targetIndex, minesMap, getArroundMinesCount, coordToIndex, indexToCoord, mapIndex, maxIndexOfRow])
+  }, [targetIndex, minesMap, getArroundMinesCount, coordToIndex, mapIndex, maxIndexOfRow, numberOfCellsInARow])
 
   useEffect(()=>{
     const count = data.slice().filter(cell => (cell !== null && cell >= 0 && cell <= 8)).length;
