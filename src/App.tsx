@@ -1,22 +1,23 @@
-import { useState, useEffect, useMemo, useCallback } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import Head from './components/Head';
 import PlayField from './components/PlayField';
 import ButtonField from './components/ButtonField';
 import Footer from './components/Footer';
 import Dialog from './components/Dialog';
 
+const MINE_CODE = 10
+const NO_BOMB_ARROUND = 0
+const GAME_WIN = 'You Win!'
+const GAME_LOSE = 'You Lose!'
+const NUMBER_OF_CELLS_IN_A_ROW = [9, 16, 24]
+
 const App = () => {
-  const MINE_CODE = 10
-  const NO_BOMB_ARROUND = 0
-  const GAME_WIN = 'You Win!'
-  const GAME_LOSE = 'You Lose!'
   const [mapIndex, setMapIndex] = useState<number>(0);
   const [targetIndex, setTargetIndex] = useState<number>();
   const [data, setData] = useState<(number|null)[]>([]);
   const [minesMap, setMinesMap] = useState<boolean[]>([]);
   const [init, setInit] = useState<boolean>(false);
   const [gameStatus, setGameStatus] = useState<string>()
-  const NUMBER_OF_CELLS_IN_A_ROW = useMemo(() => [9, 16, 24], [])
   const randMinesMap = (size: number, avoidIndex: number): boolean[] => {
     const random = (): number => {
       let random = Math.floor(Math.random() * size);
@@ -76,7 +77,7 @@ const App = () => {
 
     // 返回座標陣列
     return coords;
-  }, [NUMBER_OF_CELLS_IN_A_ROW, mapIndex])
+  }, [mapIndex])
 
   const indexToCoord = useCallback((index: number): [number, number] => (
     [
@@ -84,13 +85,13 @@ const App = () => {
       Math.floor(index / NUMBER_OF_CELLS_IN_A_ROW[mapIndex])
     ]
   ),
-    [NUMBER_OF_CELLS_IN_A_ROW, mapIndex]
+    [mapIndex]
   )
 
   const coordToIndex = useCallback((point: [number, number]): number => (
     point[1] * NUMBER_OF_CELLS_IN_A_ROW[mapIndex] + point[0]
   ),
-    [NUMBER_OF_CELLS_IN_A_ROW, mapIndex]
+    [mapIndex]
   )
 
   const getArroundMinesCount = useCallback((index: number) => {
@@ -107,7 +108,7 @@ const App = () => {
   const getCellsSize = useCallback((mapIndex: number): number => {
     return Math.pow(NUMBER_OF_CELLS_IN_A_ROW[mapIndex], 2)
   },
-    [NUMBER_OF_CELLS_IN_A_ROW]
+    []
   )
 
   const clickHandler = (
@@ -170,13 +171,13 @@ const App = () => {
     if(count === Math.pow(NUMBER_OF_CELLS_IN_A_ROW[mapIndex], 2) - NUMBER_OF_CELLS_IN_A_ROW[mapIndex]){
       setGameStatus(GAME_WIN);
     }
-  }, [data, NUMBER_OF_CELLS_IN_A_ROW, mapIndex])
+  }, [data, mapIndex])
 
   useEffect(()=>{
     setTargetIndex(undefined)
     setInit(false)
     setData(Array(getCellsSize(mapIndex)).fill(null))
-  }, [mapIndex, NUMBER_OF_CELLS_IN_A_ROW, getCellsSize])
+  }, [mapIndex, getCellsSize])
 
   return (
     <div className="container">

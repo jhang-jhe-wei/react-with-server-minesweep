@@ -4,29 +4,31 @@ type PlayFieldProps = {
   clickHandler: Function;
 }
 
+const MAP_STYLES = ['grid-cols-9', 'grid-cols-16', 'grid-cols-24']
+const getStyleBy = (value:number| null) => {
+  if(value === null){
+    return 'cell'
+  }else if(value === 0){
+    return ''
+  }
+  else if(value < 9){
+    return `symbol-${value}`
+  }else if(value === 9){
+    return 'cell symbol-flag'
+  }else if(value === 10){
+    return 'symbol-bomb'
+  }else if(value === 11){
+    return 'symbol-bomb bg-red'
+  }
+}
+
 const PlayField = (props: PlayFieldProps) => {
   const {
     data,
     mapIndex,
     clickHandler
   } = props;
-  const MAP_STYLES = ['grid-cols-9', 'grid-cols-16', 'grid-cols-24']
-  const getStyleBy = (value:number| null) => {
-    if(value === null){
-      return 'cell'
-    }else if(value === 0){
-      return ''
-    }
-    else if(value < 9){
-      return `symbol-${value}`
-    }else if(value === 9){
-      return 'cell symbol-flag'
-    }else if(value === 10){
-      return 'symbol-bomb'
-    }else if(value === 11){
-      return 'symbol-bomb bg-red'
-    }
-  }
+
 
   let targetIndex :number;
   let clickedAt: number;
