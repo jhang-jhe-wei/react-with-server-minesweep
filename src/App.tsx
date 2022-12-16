@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import Head from './components/Head';
 import PlayField from './components/PlayField';
 import ButtonField from './components/ButtonField';
@@ -29,6 +29,7 @@ const App = () => {
   const [minesMap, setMinesMap] = useState<boolean[]>([]);
   const [init, setInit] = useState<boolean>(false);
   const [gameStatus, setGameStatus] = useState<string>()
+  const cellsSize = useMemo(() => Math.pow(NUMBER_OF_CELLS_IN_A_ROW[mapIndex], 2), [mapIndex])
 
   const getAdjacentCoordinates = useCallback((x: number, y:number): [number, number][] => {
     // 定義一個空的座標陣列
@@ -105,19 +106,13 @@ const App = () => {
     return count
   }, [minesMap, getAdjacentCoordinates, indexToCoord, coordToIndex])
 
-  const getCellsSize = useCallback((mapIndex: number): number => {
-    return Math.pow(NUMBER_OF_CELLS_IN_A_ROW[mapIndex], 2)
-  },
-    []
-  )
-
   const clickHandler = (
     index: number,
     event: 'long'| 'short'| 'right'
   ) => {
     if(event === 'short') {
       if(!init){
-        setMinesMap(randMinesMap(getCellsSize(mapIndex), index))
+        setMinesMap(randMinesMap(mapIndex, cellsSize, index))
         setInit(true)
       }
       setTargetIndex(index)
@@ -164,7 +159,7 @@ const App = () => {
         return tempCells
       })
     }
-  }, [targetIndex, minesMap, getArroundMinesCount, coordToIndex, getAdjacentCoordinates, getCellsSize, indexToCoord, mapIndex])
+  }, [targetIndex, minesMap, getArroundMinesCount, coordToIndex, getAdjacentCoordinates, indexToCoord, mapIndex])
 
   useEffect(()=>{
     const count = data.slice().filter(cell => (cell !== null && cell >= 0 && cell <= 8)).length;
@@ -176,8 +171,8 @@ const App = () => {
   useEffect(()=>{
     setTargetIndex(undefined)
     setInit(false)
-    setData(Array(getCellsSize(mapIndex)).fill(null))
-  }, [mapIndex, getCellsSize])
+    setData(Array(cellsSize).fill(null))
+  }, [mapIndex, cellsSize])
 
   return (
     <div className="container">
