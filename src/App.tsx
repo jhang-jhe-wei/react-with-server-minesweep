@@ -25,7 +25,6 @@ const App = () => {
   const [gameStatus, setGameStatus] = useState<string>()
   const totalCellsCount = useMemo(() => Math.pow(NUMBER_OF_CELLS_IN_A_ROW[mapIndex], 2), [mapIndex])
   const totalMinesCount = useMemo(() => MINE_LIST[mapIndex], [mapIndex])
-  const maxIndexOfRow = useMemo(() => NUMBER_OF_CELLS_IN_A_ROW[mapIndex] - 1, [mapIndex])
   const numberOfCellsInARow = useMemo(() => NUMBER_OF_CELLS_IN_A_ROW[mapIndex], [mapIndex])
 
   const clickHandler = (
@@ -52,6 +51,7 @@ const App = () => {
 
   useEffect(() => {
     if(targetIndex === undefined) return;
+    const maxIndexOfRow = NUMBER_OF_CELLS_IN_A_ROW[mapIndex] - 1
     const getArroundMinesCount = (index: number) => {
       const [x, y] = indexToCoord(index, numberOfCellsInARow)
       const adjacentArray = getAdjacentCoordinates(x, y, maxIndexOfRow)
@@ -98,7 +98,7 @@ const App = () => {
     }else{
       sweep()
     }
-  }, [targetIndex, minesMap, mapIndex, maxIndexOfRow, numberOfCellsInARow])
+  }, [targetIndex, minesMap, mapIndex, numberOfCellsInARow])
 
   useEffect(()=>{
     const uncoveredCellsCount = data.slice().filter(cell => (cell !== COVERD_CODE && cell >= 0 && cell <= 8)).length;
