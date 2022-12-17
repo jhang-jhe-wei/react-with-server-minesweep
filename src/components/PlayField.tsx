@@ -1,4 +1,4 @@
-import { SHORT_CLICK_EVENT, LONG_CLICK_EVENT, RIGHT_CLICK_EVENT } from '../data/constants';
+import { SHORT_CLICK_EVENT } from '../data/constants';
 
 type PlayFieldProps = {
   data: (number|null)[];
@@ -6,6 +6,8 @@ type PlayFieldProps = {
   clickHandler: Function;
 }
 
+const LONG_CLICK_EVENT = 'long'
+const RIGHT_CLICK_EVENT = 'right'
 const MAP_STYLES = ['grid-cols-9', 'grid-cols-16', 'grid-cols-24']
 const getStyleBy = (value:number| null) => {
   if(value === null){

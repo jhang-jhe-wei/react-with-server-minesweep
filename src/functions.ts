@@ -1,14 +1,11 @@
-import { NUMBER_OF_CELLS_IN_A_ROW } from './data/constants';
-
-export const randMinesMap = (mapIndex:number, size: number, avoidIndex: number): boolean[] => {
+export const randMinesMap = (cellsCount:number, minesCount: number, avoidIndex: number): boolean[] => {
+  let map = Array(cellsCount).fill(false);
   const random = (): number => {
-    let random = Math.floor(Math.random() * size);
-    while(random === avoidIndex) random = Math.floor(Math.random() * size);
+    let random = Math.floor(Math.random() * cellsCount);
+    while(random === avoidIndex || map[random]) random = Math.floor(Math.random() * cellsCount);
     return random;
   }
-
-  let map = Array(size).fill(false);
-  [ ...Array(NUMBER_OF_CELLS_IN_A_ROW[mapIndex]) ].forEach(() => map[random()] = true);
+  [ ...Array(minesCount) ].forEach(() => map[random()] = true);
   return map;
 }
 

@@ -5,7 +5,7 @@ import ButtonField from './components/ButtonField';
 import Footer from './components/Footer';
 import Dialog from './components/Dialog';
 import { randMinesMap, indexToCoord, getAdjacentCoordinates, coordToIndex } from './functions';
-import { NUMBER_OF_CELLS_IN_A_ROW, SHORT_CLICK_EVENT } from './data/constants';
+import { SHORT_CLICK_EVENT } from './data/constants';
 
 const MINE_CODE = 10
 const HIT_MINE_CODE = 11
@@ -14,6 +14,8 @@ const FLAG_CODE = 9
 const COVERD_CODE = null
 const GAME_WIN = 'You Win!'
 const GAME_LOSE = 'You Lose!'
+const MINE_LIST = [10, 40, 99]
+const NUMBER_OF_CELLS_IN_A_ROW = [9, 16, 24]
 const App = () => {
   const [mapIndex, setMapIndex] = useState<number>(0);
   const [targetIndex, setTargetIndex] = useState<number>();
@@ -22,6 +24,7 @@ const App = () => {
   const [init, setInit] = useState<boolean>(false);
   const [gameStatus, setGameStatus] = useState<string>()
   const totalCellsCount = useMemo(() => Math.pow(NUMBER_OF_CELLS_IN_A_ROW[mapIndex], 2), [mapIndex])
+  const totalMinesCount = useMemo(() => MINE_LIST[mapIndex], [mapIndex])
   const maxIndexOfRow = useMemo(() => NUMBER_OF_CELLS_IN_A_ROW[mapIndex] - 1, [mapIndex])
   const numberOfCellsInARow = useMemo(() => NUMBER_OF_CELLS_IN_A_ROW[mapIndex], [mapIndex])
 
@@ -42,7 +45,7 @@ const App = () => {
   ) => {
     if(event === SHORT_CLICK_EVENT) {
       if(!init){
-        setMinesMap(randMinesMap(mapIndex, totalCellsCount, index))
+        setMinesMap(randMinesMap(totalCellsCount, totalMinesCount, index))
         setInit(true)
       }
       setTargetIndex(index)
@@ -100,9 +103,8 @@ const App = () => {
 
   useEffect(()=>{
     const uncoveredCellsCount = data.slice().filter(cell => (cell !== COVERD_CODE && cell >= 0 && cell <= 8)).length;
-    const bombCount = numberOfCellsInARow;
-    if(uncoveredCellsCount === totalCellsCount - bombCount) setGameStatus(GAME_WIN);
-  }, [data, totalCellsCount, numberOfCellsInARow])
+    if(uncoveredCellsCount === totalCellsCount - totalMinesCount) setGameStatus(GAME_WIN);
+  }, [data, totalCellsCount, numberOfCellsInARow, totalMinesCount])
 
   useEffect(()=>{
     setTargetIndex(undefined)
