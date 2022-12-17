@@ -125,7 +125,7 @@ const App = () => {
     <div className="container">
       <Head/>
       <div className="play-field-container">
-        { gameStatus && <Dialog text={gameStatus} clickHandler={()=>{window.location.reload()}} /> }
+        { gameStatus && <Dialog text={gameStatus} clickHandler={()=>initGame()} /> }
         <PlayField data={data} mapIndex={mapIndex} clickHandler={clickHandler}/>
       </div>
       <ButtonField clickHandler={buttonClickHandler}/>
