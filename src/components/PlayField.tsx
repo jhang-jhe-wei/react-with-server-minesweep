@@ -1,3 +1,5 @@
+import { SHORT_CLICK_EVENT, LONG_CLICK_EVENT, RIGHT_CLICK_EVENT } from '../data/constants';
+
 type PlayFieldProps = {
   data: (number|null)[];
   mapIndex: number;
@@ -48,14 +50,14 @@ const PlayField = (props: PlayFieldProps) => {
             if(targetIndex === index){
               const duration = Date.now() - clickedAt;
               if(duration <= 500){
-                clickHandler(index, 'short')
+                clickHandler(index, SHORT_CLICK_EVENT)
               }else{
-                clickHandler(index, 'long')
+                clickHandler(index, LONG_CLICK_EVENT)
               }
             }
           }}
           onContextMenu={(e)=>{
-            clickHandler(index, 'right')
+            clickHandler(index, RIGHT_CLICK_EVENT)
             e.preventDefault();
             return false;
           }}

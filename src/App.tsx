@@ -5,7 +5,7 @@ import ButtonField from './components/ButtonField';
 import Footer from './components/Footer';
 import Dialog from './components/Dialog';
 import { randMinesMap, indexToCoord, getAdjacentCoordinates, coordToIndex } from './functions';
-import { NUMBER_OF_CELLS_IN_A_ROW } from './data/constants';
+import { NUMBER_OF_CELLS_IN_A_ROW, SHORT_CLICK_EVENT } from './data/constants';
 
 const MINE_CODE = 10
 const HIT_MINE_CODE = 11
@@ -38,9 +38,9 @@ const App = () => {
 
   const clickHandler = (
     index: number,
-    event: 'long'| 'short'| 'right'
+    event: string
   ) => {
-    if(event === 'short') {
+    if(event === SHORT_CLICK_EVENT) {
       if(!init){
         setMinesMap(randMinesMap(mapIndex, totalCellsCount, index))
         setInit(true)
