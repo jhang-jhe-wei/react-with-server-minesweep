@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useMemo } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import Head from './components/Head';
 import PlayField from './components/PlayField';
 import ButtonField from './components/ButtonField';
@@ -28,17 +28,6 @@ const App = () => {
   const maxIndexOfRow = useMemo(() => NUMBER_OF_CELLS_IN_A_ROW[mapIndex] - 1, [mapIndex])
   const numberOfCellsInARow = useMemo(() => NUMBER_OF_CELLS_IN_A_ROW[mapIndex], [mapIndex])
 
-  const getArroundMinesCount = useCallback((index: number) => {
-    const [x, y] = indexToCoord(index, numberOfCellsInARow)
-    const adjacentArray = getAdjacentCoordinates(x, y, maxIndexOfRow)
-    let count = 0
-    adjacentArray.forEach((point) => {
-      const position = coordToIndex(point, numberOfCellsInARow)
-      if(minesMap[position]) count += 1
-    })
-    return count
-  }, [minesMap, maxIndexOfRow, numberOfCellsInARow])
-
   const clickHandler = (
     index: number,
     event: string
@@ -63,6 +52,16 @@ const App = () => {
 
   useEffect(() => {
     if(targetIndex === undefined) return;
+    const getArroundMinesCount = (index: number) => {
+      const [x, y] = indexToCoord(index, numberOfCellsInARow)
+      const adjacentArray = getAdjacentCoordinates(x, y, maxIndexOfRow)
+      let count = 0
+      adjacentArray.forEach((point) => {
+        const position = coordToIndex(point, numberOfCellsInARow)
+        if(minesMap[position]) count += 1
+      })
+      return count
+    }
     const checkHitMine = () => minesMap[targetIndex];
     const gameOver = () => {
       setData((cells) => cells.map((cell, index) => {
@@ -99,7 +98,7 @@ const App = () => {
     }else{
       sweep()
     }
-  }, [targetIndex, minesMap, getArroundMinesCount, mapIndex, maxIndexOfRow, numberOfCellsInARow])
+  }, [targetIndex, minesMap, mapIndex, maxIndexOfRow, numberOfCellsInARow])
 
   useEffect(()=>{
     const uncoveredCellsCount = data.slice().filter(cell => (cell !== COVERD_CODE && cell >= 0 && cell <= 8)).length;
