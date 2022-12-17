@@ -109,6 +109,7 @@ const App = () => {
     setTargetIndex(undefined)
     setInit(false)
     setData(Array(totalCellsCount).fill(null))
+    setGameStatus(undefined)
   }, [totalCellsCount])
 
   return (
