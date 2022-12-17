@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useCallback } from 'react';
 import Head from './components/Head';
 import PlayField from './components/PlayField';
 import ButtonField from './components/ButtonField';
@@ -26,6 +26,22 @@ const App = () => {
   const totalCellsCount = useMemo(() => Math.pow(NUMBER_OF_CELLS_IN_A_ROW[mapIndex], 2), [mapIndex])
   const totalMinesCount = useMemo(() => MINE_LIST[mapIndex], [mapIndex])
   const numberOfCellsInARow = useMemo(() => NUMBER_OF_CELLS_IN_A_ROW[mapIndex], [mapIndex])
+
+  const initGame = useCallback(() => {
+    setTargetIndex(undefined)
+    setInit(false)
+    setData(Array(totalCellsCount).fill(null))
+    setGameStatus(undefined)
+  }, [totalCellsCount])
+
+  useEffect(() => {
+    initGame()
+  }, [initGame])
+
+  const buttonClickHandler = (mapIndex: number) => {
+    initGame();
+    setMapIndex(mapIndex);
+  }
 
   const clickHandler = (
     index: number,
@@ -105,13 +121,6 @@ const App = () => {
     if(uncoveredCellsCount === totalCellsCount - totalMinesCount) setGameStatus(GAME_WIN);
   }, [data, totalCellsCount, numberOfCellsInARow, totalMinesCount])
 
-  useEffect(()=>{
-    setTargetIndex(undefined)
-    setInit(false)
-    setData(Array(totalCellsCount).fill(null))
-    setGameStatus(undefined)
-  }, [totalCellsCount])
-
   return (
     <div className="container">
       <Head/>
@@ -119,7 +128,7 @@ const App = () => {
         { gameStatus && <Dialog text={gameStatus} clickHandler={()=>{window.location.reload()}} /> }
         <PlayField data={data} mapIndex={mapIndex} clickHandler={clickHandler}/>
       </div>
-      <ButtonField clickHandler={setMapIndex}/>
+      <ButtonField clickHandler={buttonClickHandler}/>
       <Footer/>
     </div>
   );
