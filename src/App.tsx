@@ -25,7 +25,6 @@ const App = () => {
   const [gameStatus, setGameStatus] = useState<string>()
   const totalCellsCount = useMemo(() => Math.pow(NUMBER_OF_CELLS_IN_A_ROW[mapIndex], 2), [mapIndex])
   const totalMinesCount = useMemo(() => MINE_LIST[mapIndex], [mapIndex])
-  const numberOfCellsInARow = useMemo(() => NUMBER_OF_CELLS_IN_A_ROW[mapIndex], [mapIndex])
 
   const initGame = useCallback(() => {
     setTargetIndex(undefined)
@@ -68,6 +67,7 @@ const App = () => {
   useEffect(() => {
     if(targetIndex === undefined) return;
     const maxIndexOfRow = NUMBER_OF_CELLS_IN_A_ROW[mapIndex] - 1
+    const numberOfCellsInARow = NUMBER_OF_CELLS_IN_A_ROW[mapIndex]
     const getArroundMinesCount = (index: number) => {
       const [x, y] = indexToCoord(index, numberOfCellsInARow)
       const adjacentArray = getAdjacentCoordinates(x, y, maxIndexOfRow)
@@ -79,47 +79,46 @@ const App = () => {
       return count
     }
     const checkHitMine = () => minesMap[targetIndex];
-    const gameOver = () => {
-      setData((cells) => cells.map((cell, index) => {
-        if(index === targetIndex) return HIT_MINE_CODE;
-        return minesMap[index]? MINE_CODE: cell
-      }))
-      setGameStatus(GAME_LOSE);
-    }
-    const sweep = () => {
-      setData(cells => {
-        const tempCells = cells.slice();
+    setData(cells => {
+      const gameOver = () => {
+        cells = cells.map((cell, index) => {
+          if(index === targetIndex) return HIT_MINE_CODE;
+          return minesMap[index]? MINE_CODE: cell
+        })
+        setGameStatus(GAME_LOSE);
+      }
+      const sweep = () => {
         const scannedList = Array(cells.length).fill(false)
         const recursiveSweep = (index: number) => {
           if(scannedList[index]) return;
           const result = getArroundMinesCount(index);
           scannedList[index] = true;
           if(result !== NO_BOMB_ARROUND_CODE){
-            tempCells[index] = result;
+            cells[index] = result;
             return;
           }
-          tempCells[index] = NO_BOMB_ARROUND_CODE;
+          cells[index] = NO_BOMB_ARROUND_CODE;
           const coords = getAdjacentCoordinates(...indexToCoord(index, numberOfCellsInARow), maxIndexOfRow)
           coords.forEach(coord => {
             recursiveSweep(coordToIndex(coord, numberOfCellsInARow))
           })
         }
         recursiveSweep(targetIndex)
-        return tempCells
-      })
-    }
+      }
+      const checkNoUncoveredCells = () => {
+        const uncoveredCellsCount = cells.filter(cell => (cell !== COVERD_CODE && cell >= 0 && cell <= 8)).length;
+        return (uncoveredCellsCount === totalCellsCount - totalMinesCount)
+      }
 
-    if(checkHitMine()){
-      gameOver()
-    }else{
-      sweep()
-    }
-  }, [targetIndex, minesMap, mapIndex, numberOfCellsInARow])
-
-  useEffect(()=>{
-    const uncoveredCellsCount = data.slice().filter(cell => (cell !== COVERD_CODE && cell >= 0 && cell <= 8)).length;
-    if(uncoveredCellsCount === totalCellsCount - totalMinesCount) setGameStatus(GAME_WIN);
-  }, [data, totalCellsCount, numberOfCellsInARow, totalMinesCount])
+      if(checkHitMine()){
+        gameOver()
+      }else{
+        sweep()
+        if(checkNoUncoveredCells()) setGameStatus(GAME_WIN)
+      }
+      return [...cells]
+    })
+  }, [targetIndex, minesMap, mapIndex, totalCellsCount, totalMinesCount])
 
   return (
     <div className="container">
