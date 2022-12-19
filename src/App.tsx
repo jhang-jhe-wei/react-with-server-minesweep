@@ -6,7 +6,7 @@ import Footer from './components/Footer';
 import Dialog from './components/Dialog';
 import { randMinesMap, indexToCoord, getAdjacentCoordinates, coordToIndex } from './functions';
 import { SHORT_CLICK_EVENT, NUMBER_OF_CELLS_IN_A_ROW, GAMEING } from './data/constants';
-import Reducer, { initReducer, SET_GAME_STATUS_ACTION, SET_MAP_INDEX_ACTION } from './reducer';
+import Reducer, { initReducer, ReducerActions } from './reducer';
 
 const MINE_CODE = 10
 const HIT_MINE_CODE = 11
@@ -33,7 +33,7 @@ const App = () => {
     setTargetIndex(undefined)
     setInit(false)
     setData(Array(totalCellsCount).fill(null))
-    dispatch({type: SET_GAME_STATUS_ACTION, payload: {
+    dispatch({type: ReducerActions.SET_GAME_STATUS, payload: {
       gameStatus: GAMEING
     }})
   }, [totalCellsCount])
@@ -43,7 +43,7 @@ const App = () => {
   }, [initGame])
 
   const buttonClickHandler = (mapIndex: number) => {
-    dispatch({type: SET_MAP_INDEX_ACTION, payload: {
+    dispatch({type: ReducerActions.SET_MAP_INDEX, payload: {
       mapIndex
     }})
   }
@@ -91,7 +91,7 @@ const App = () => {
           if(index === targetIndex) return HIT_MINE_CODE;
           return minesMap[index]? MINE_CODE: cell
         })
-        dispatch({type: SET_GAME_STATUS_ACTION, payload: {
+        dispatch({type: ReducerActions.SET_GAME_STATUS, payload: {
           gameStatus: GAME_LOSE
         }})
       }
@@ -123,7 +123,7 @@ const App = () => {
       }else{
         sweep()
         if(checkNoUncoveredCells())
-          dispatch({type: SET_GAME_STATUS_ACTION, payload: {
+          dispatch({type: ReducerActions.SET_GAME_STATUS, payload: {
             gameStatus: GAME_WIN
           }})
 

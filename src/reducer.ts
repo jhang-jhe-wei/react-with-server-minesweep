@@ -15,8 +15,10 @@ interface ReducerAction {
   payload?: any;
 }
 
-export const SET_MAP_INDEX_ACTION = 'action$set_map_index'
-export const SET_GAME_STATUS_ACTION = 'action$set_game_status'
+export const ReducerActions = {
+  SET_MAP_INDEX: 'action$set_map_index',
+  SET_GAME_STATUS: 'action$set_game_status'
+}
 
 export const initReducer = (mapIndex: number) => {
   const totalCellsCount = Math.pow(NUMBER_OF_CELLS_IN_A_ROW[mapIndex], 2)
@@ -34,10 +36,10 @@ export const initReducer = (mapIndex: number) => {
 
 const Reducer = (state: ReducerState, action: ReducerAction) => {
   switch (action.type) {
-    case SET_MAP_INDEX_ACTION: {
+    case ReducerActions.SET_MAP_INDEX: {
       return initReducer(action.payload.mapIndex);
     }
-    case SET_GAME_STATUS_ACTION: {
+    case ReducerActions.SET_GAME_STATUS: {
       return {
         ...state,
         gameStatus: action.payload.gameStatus
