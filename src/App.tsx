@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo, useCallback } from 'react';
+import { useState, useEffect, useMemo, useCallback, useReducer } from 'react';
 import Head from './components/Head';
 import PlayField from './components/PlayField';
 import ButtonField from './components/ButtonField';
@@ -6,6 +6,7 @@ import Footer from './components/Footer';
 import Dialog from './components/Dialog';
 import { randMinesMap, indexToCoord, getAdjacentCoordinates, coordToIndex } from './functions';
 import { SHORT_CLICK_EVENT } from './data/constants';
+import Reducer from './reducer';
 
 const MINE_CODE = 10
 const HIT_MINE_CODE = 11
@@ -25,6 +26,7 @@ const App = () => {
   const [gameStatus, setGameStatus] = useState<string>()
   const totalCellsCount = useMemo(() => Math.pow(NUMBER_OF_CELLS_IN_A_ROW[mapIndex], 2), [mapIndex])
   const totalMinesCount = useMemo(() => MINE_LIST[mapIndex], [mapIndex])
+  // const [state, dispatch] = useReducer(Reducer, { })
 
   const initGame = useCallback(() => {
     setTargetIndex(undefined)
