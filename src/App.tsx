@@ -5,42 +5,29 @@ import ButtonField from './components/ButtonField';
 import Footer from './components/Footer';
 import Dialog from './components/Dialog';
 import { randMinesMap, indexToCoord, getAdjacentCoordinates, coordToIndex } from './functions';
-import { SHORT_CLICK_EVENT } from './data/constants';
-import Reducer from './reducer';
+import { SHORT_CLICK_EVENT, NUMBER_OF_CELLS_IN_A_ROW, MINE_LIST } from './data/constants';
+import Reducer, { initReducer, SET_MAP_INDEX_ACTION } from './reducer';
 
 const MINE_CODE = 10
 const HIT_MINE_CODE = 11
 const NO_BOMB_ARROUND_CODE = 0
 const FLAG_CODE = 9
 const COVERD_CODE = null
-const GAMEING = 'gaming'
 const GAME_WIN = 'You Win!'
 const GAME_LOSE = 'You Lose!'
-const MINE_LIST = [10, 40, 99]
-const NUMBER_OF_CELLS_IN_A_ROW = [9, 16, 24]
-
-const reducerInit = (mapIndex: number) => {
-  const totalCellsCount = Math.pow(NUMBER_OF_CELLS_IN_A_ROW[mapIndex], 2)
-
-  return {
-    dataMap: Array(totalCellsCount).fill(null),
-    minesMap: [],
-    gameStatus: GAMEING,
-    mapIndex: mapIndex,
-    totalCellsCount: totalCellsCount,
-    totalMinesCount: MINE_LIST[mapIndex],
-    hasCreatedMine: false
-  } }
 
 const App = () => {
-  const [mapIndex, setMapIndex] = useState<number>(0);
+  const [state, dispatch] = useReducer(Reducer, 0, initReducer)
+  const {
+    mapIndex,
+    totalCellsCount,
+    totalMinesCount
+  } = state
   const [targetIndex, setTargetIndex] = useState<number>();
   const [data, setData] = useState<(number|null)[]>([]);
   const [minesMap, setMinesMap] = useState<boolean[]>([]);
   const [init, setInit] = useState<boolean>(false);
   const [gameStatus, setGameStatus] = useState<string>()
-  const totalCellsCount = useMemo(() => Math.pow(NUMBER_OF_CELLS_IN_A_ROW[mapIndex], 2), [mapIndex])
-  const totalMinesCount = useMemo(() => MINE_LIST[mapIndex], [mapIndex])
 
   const initGame = useCallback(() => {
     setTargetIndex(undefined)
@@ -52,11 +39,11 @@ const App = () => {
   useEffect(() => {
     initGame()
   }, [initGame])
-  const [state, dispatch] = useReducer(Reducer, 0, reducerInit)
 
   const buttonClickHandler = (mapIndex: number) => {
-    initGame();
-    setMapIndex(mapIndex);
+    dispatch({type: SET_MAP_INDEX_ACTION, payload: {
+      mapIndex
+    }})
   }
 
   const clickHandler = (
