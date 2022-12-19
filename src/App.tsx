@@ -4,7 +4,7 @@ import PlayField from './components/PlayField';
 import ButtonField from './components/ButtonField';
 import Footer from './components/Footer';
 import Dialog from './components/Dialog';
-import { randMinesMap, indexToCoord, getAdjacentCoordinates, coordToIndex } from './functions';
+import { indexToCoord, getAdjacentCoordinates, coordToIndex } from './functions';
 import { SHORT_CLICK_EVENT, NUMBER_OF_CELLS_IN_A_ROW, GAMEING } from './data/constants';
 import Reducer, { initReducer, ReducerActions } from './reducer';
 
@@ -23,15 +23,15 @@ const App = () => {
     totalCellsCount,
     totalMinesCount,
     gameStatus,
-    hasCreatedMine: init
+    hasCreatedMine: init,
+    minesMap
   } = state
   const [targetIndex, setTargetIndex] = useState<number>();
   const [data, setData] = useState<(number|null)[]>([]);
-  const [minesMap, setMinesMap] = useState<boolean[]>([]);
 
   const initGame = useCallback(() => {
     setTargetIndex(undefined)
-    dispatch({type: ReducerActions.SET_HAS_CREATED_MINES, payload: {
+    dispatch({type: ReducerActions.RESET_HAS_CREATED_MINES, payload: {
       hasCreatedMine: false
     }})
     setData(Array(totalCellsCount).fill(null))
@@ -56,9 +56,8 @@ const App = () => {
   ) => {
     if(event === SHORT_CLICK_EVENT) {
       if(!init){
-        setMinesMap(randMinesMap(totalCellsCount, totalMinesCount, index))
-        dispatch({type: ReducerActions.SET_HAS_CREATED_MINES, payload: {
-          hasCreatedMine: true
+        dispatch({type: ReducerActions.GENERATE_MINES, payload: {
+          avoidIndex: index
         }})
       }
       setTargetIndex(index)
