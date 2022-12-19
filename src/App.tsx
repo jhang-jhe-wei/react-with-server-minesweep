@@ -22,16 +22,18 @@ const App = () => {
     mapIndex,
     totalCellsCount,
     totalMinesCount,
-    gameStatus
+    gameStatus,
+    hasCreatedMine: init
   } = state
   const [targetIndex, setTargetIndex] = useState<number>();
   const [data, setData] = useState<(number|null)[]>([]);
   const [minesMap, setMinesMap] = useState<boolean[]>([]);
-  const [init, setInit] = useState<boolean>(false);
 
   const initGame = useCallback(() => {
     setTargetIndex(undefined)
-    setInit(false)
+    dispatch({type: ReducerActions.SET_HAS_CREATED_MINES, payload: {
+      hasCreatedMine: false
+    }})
     setData(Array(totalCellsCount).fill(null))
     dispatch({type: ReducerActions.SET_GAME_STATUS, payload: {
       gameStatus: GAMEING
@@ -55,7 +57,9 @@ const App = () => {
     if(event === SHORT_CLICK_EVENT) {
       if(!init){
         setMinesMap(randMinesMap(totalCellsCount, totalMinesCount, index))
-        setInit(true)
+        dispatch({type: ReducerActions.SET_HAS_CREATED_MINES, payload: {
+          hasCreatedMine: true
+        }})
       }
       setTargetIndex(index)
     }else{

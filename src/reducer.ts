@@ -17,7 +17,8 @@ interface ReducerAction {
 
 export const ReducerActions = {
   SET_MAP_INDEX: 'action$set_map_index',
-  SET_GAME_STATUS: 'action$set_game_status'
+  SET_GAME_STATUS: 'action$set_game_status',
+  SET_HAS_CREATED_MINES: 'action$set_has_created_minies'
 }
 
 export const initReducer = (mapIndex: number) => {
@@ -45,7 +46,12 @@ const Reducer = (state: ReducerState, action: ReducerAction) => {
         gameStatus: action.payload.gameStatus
       };
     }
-
+    case ReducerActions.SET_HAS_CREATED_MINES: {
+      return {
+        ...state,
+        hasCreatedMine: action.payload.hasCreatedMine
+      };
+    }
     default:
       throw Error('Unknown action: ' + action.type);
   }
