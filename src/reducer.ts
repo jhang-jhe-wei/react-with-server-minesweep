@@ -5,6 +5,7 @@ interface ReducerState {
   mapIndex: number;
   totalCellsCount: number;
   totalMinesCount: number;
+  hasCreatedMine: boolean;
 }
 
 interface ReducerAction {

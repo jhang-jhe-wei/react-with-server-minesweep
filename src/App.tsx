@@ -13,10 +13,25 @@ const HIT_MINE_CODE = 11
 const NO_BOMB_ARROUND_CODE = 0
 const FLAG_CODE = 9
 const COVERD_CODE = null
+const GAMEING = 'gaming'
 const GAME_WIN = 'You Win!'
 const GAME_LOSE = 'You Lose!'
 const MINE_LIST = [10, 40, 99]
 const NUMBER_OF_CELLS_IN_A_ROW = [9, 16, 24]
+
+const reducerInit = (mapIndex: number) => {
+  const totalCellsCount = Math.pow(NUMBER_OF_CELLS_IN_A_ROW[mapIndex], 2)
+
+  return {
+    dataMap: Array(totalCellsCount).fill(null),
+    minesMap: [],
+    gameStatus: GAMEING,
+    mapIndex: mapIndex,
+    totalCellsCount: totalCellsCount,
+    totalMinesCount: MINE_LIST[mapIndex],
+    hasCreatedMine: false
+  } }
+
 const App = () => {
   const [mapIndex, setMapIndex] = useState<number>(0);
   const [targetIndex, setTargetIndex] = useState<number>();
@@ -26,7 +41,6 @@ const App = () => {
   const [gameStatus, setGameStatus] = useState<string>()
   const totalCellsCount = useMemo(() => Math.pow(NUMBER_OF_CELLS_IN_A_ROW[mapIndex], 2), [mapIndex])
   const totalMinesCount = useMemo(() => MINE_LIST[mapIndex], [mapIndex])
-  // const [state, dispatch] = useReducer(Reducer, { })
 
   const initGame = useCallback(() => {
     setTargetIndex(undefined)
@@ -38,6 +52,7 @@ const App = () => {
   useEffect(() => {
     initGame()
   }, [initGame])
+  const [state, dispatch] = useReducer(Reducer, 0, reducerInit)
 
   const buttonClickHandler = (mapIndex: number) => {
     initGame();
