@@ -1,12 +1,12 @@
-import { useState, useEffect, useMemo, useCallback, useReducer } from 'react';
+import { useState, useEffect, useCallback, useReducer } from 'react';
 import Head from './components/Head';
 import PlayField from './components/PlayField';
 import ButtonField from './components/ButtonField';
 import Footer from './components/Footer';
 import Dialog from './components/Dialog';
 import { randMinesMap, indexToCoord, getAdjacentCoordinates, coordToIndex } from './functions';
-import { SHORT_CLICK_EVENT, NUMBER_OF_CELLS_IN_A_ROW, MINE_LIST } from './data/constants';
-import Reducer, { initReducer, SET_MAP_INDEX_ACTION } from './reducer';
+import { SHORT_CLICK_EVENT, NUMBER_OF_CELLS_IN_A_ROW, GAMEING } from './data/constants';
+import Reducer, { initReducer, SET_GAME_STATUS_ACTION, SET_MAP_INDEX_ACTION } from './reducer';
 
 const MINE_CODE = 10
 const HIT_MINE_CODE = 11
@@ -21,19 +21,21 @@ const App = () => {
   const {
     mapIndex,
     totalCellsCount,
-    totalMinesCount
+    totalMinesCount,
+    gameStatus
   } = state
   const [targetIndex, setTargetIndex] = useState<number>();
   const [data, setData] = useState<(number|null)[]>([]);
   const [minesMap, setMinesMap] = useState<boolean[]>([]);
   const [init, setInit] = useState<boolean>(false);
-  const [gameStatus, setGameStatus] = useState<string>()
 
   const initGame = useCallback(() => {
     setTargetIndex(undefined)
     setInit(false)
     setData(Array(totalCellsCount).fill(null))
-    setGameStatus(undefined)
+    dispatch({type: SET_GAME_STATUS_ACTION, payload: {
+      gameStatus: GAMEING
+    }})
   }, [totalCellsCount])
 
   useEffect(() => {
@@ -89,7 +91,9 @@ const App = () => {
           if(index === targetIndex) return HIT_MINE_CODE;
           return minesMap[index]? MINE_CODE: cell
         })
-        setGameStatus(GAME_LOSE);
+        dispatch({type: SET_GAME_STATUS_ACTION, payload: {
+          gameStatus: GAME_LOSE
+        }})
       }
       const sweep = () => {
         const scannedList = Array(cells.length).fill(false)
@@ -118,7 +122,11 @@ const App = () => {
         gameOver()
       }else{
         sweep()
-        if(checkNoUncoveredCells()) setGameStatus(GAME_WIN)
+        if(checkNoUncoveredCells())
+          dispatch({type: SET_GAME_STATUS_ACTION, payload: {
+            gameStatus: GAME_WIN
+          }})
+
       }
       return [...cells]
     })
@@ -128,7 +136,7 @@ const App = () => {
     <div className="container">
       <Head/>
       <div className="play-field-container">
-        { gameStatus && <Dialog text={gameStatus} clickHandler={()=>initGame()} /> }
+        { gameStatus !== GAMEING && <Dialog text={gameStatus} clickHandler={()=>initGame()} /> }
         <PlayField data={data} mapIndex={mapIndex} clickHandler={clickHandler}/>
       </div>
       <ButtonField clickHandler={buttonClickHandler}/>

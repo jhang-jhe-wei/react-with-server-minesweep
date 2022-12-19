@@ -10,16 +10,13 @@ interface ReducerState {
   hasCreatedMine: boolean;
 }
 
-interface SetMapIndexActionProps {
-  mapIndex: number
-}
-
 interface ReducerAction {
   type: string;
-  payload: SetMapIndexActionProps;
+  payload?: any;
 }
 
 export const SET_MAP_INDEX_ACTION = 'action$set_map_index'
+export const SET_GAME_STATUS_ACTION = 'action$set_game_status'
 
 export const initReducer = (mapIndex: number) => {
   const totalCellsCount = Math.pow(NUMBER_OF_CELLS_IN_A_ROW[mapIndex], 2)
@@ -40,6 +37,13 @@ const Reducer = (state: ReducerState, action: ReducerAction) => {
     case SET_MAP_INDEX_ACTION: {
       return initReducer(action.payload.mapIndex);
     }
+    case SET_GAME_STATUS_ACTION: {
+      return {
+        ...state,
+        gameStatus: action.payload.gameStatus
+      };
+    }
+
     default:
       throw Error('Unknown action: ' + action.type);
   }
