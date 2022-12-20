@@ -18,11 +18,14 @@ export interface ReducerAction {
 
 const NUMBER_OF_CELLS_IN_A_ROW = [9, 16, 24]
 const MINE_LIST = [10, 40, 99]
-const COVERD_CODE = null
-const NO_BOMB_ARROUND_CODE = 0
-const FLAG_CODE = 9
-const MINE_CODE = 10
-const HIT_MINE_CODE = 11
+const MAP_OBJECT = {
+  COVERED: null,
+  NO_BOMB_ARROUND: 0,
+  FLAG: 9,
+  MINE: 10,
+  HIT_MINE: 11
+}
+
 
 export const ReducerActions = {
   SET_MAP_INDEX: 'action$set_map_index',
@@ -49,10 +52,10 @@ export const initReducer = (mapIndex: number) => {
   } }
 
 const putFlagOrKeepDataMap = (dataMap: number[], index: number) => {
-  if(dataMap[index] !== COVERD_CODE && dataMap[index] !== FLAG_CODE) return dataMap;
+  if(dataMap[index] !== MAP_OBJECT.COVERED && dataMap[index] !== MAP_OBJECT.FLAG) return dataMap;
   return [
     ...dataMap.slice(0, index),
-    dataMap[index] === FLAG_CODE ? COVERD_CODE: FLAG_CODE,
+    dataMap[index] === MAP_OBJECT.FLAG ? MAP_OBJECT.COVERED: MAP_OBJECT.FLAG,
     ...dataMap.slice(index + 1),
   ]
 }
@@ -123,8 +126,8 @@ const Reducer = (state: ReducerState, action: ReducerAction) => {
 
       const gameOver = () => {
         const tempDataMap = dataMap.map((cell, index) => {
-          if(index === targetIndex) return HIT_MINE_CODE;
-          return minesMap[index]? MINE_CODE: cell
+          if(index === targetIndex) return MAP_OBJECT.HIT_MINE;
+          return minesMap[index]? MAP_OBJECT.MINE: cell
         })
         return {
           ...state,
@@ -140,11 +143,11 @@ const Reducer = (state: ReducerState, action: ReducerAction) => {
           if(scannedList[index]) return;
           const result = getArroundMinesCount(index);
           scannedList[index] = true;
-          if(result !== NO_BOMB_ARROUND_CODE){
+          if(result !== MAP_OBJECT.NO_BOMB_ARROUND){
             tempDataMap[index] = result;
             return;
           }
-          tempDataMap[index] = NO_BOMB_ARROUND_CODE;
+          tempDataMap[index] = MAP_OBJECT.NO_BOMB_ARROUND;
           const coords = getAdjacentCoordinates(...indexToCoord(index, numberOfCellsInARow), maxIndexOfRow)
           coords.forEach(coord => {
             recursiveSweep(coordToIndex(coord, numberOfCellsInARow))
@@ -155,7 +158,7 @@ const Reducer = (state: ReducerState, action: ReducerAction) => {
       }
 
       const checkNoUncoveredCells = () => {
-        const uncoveredCellsCount = dataMap.filter(cell => (cell !== COVERD_CODE && cell >= 0 && cell <= 8)).length;
+        const uncoveredCellsCount = dataMap.filter(cell => (cell !== MAP_OBJECT.COVERED && cell >= 0 && cell <= 8)).length;
         return (uncoveredCellsCount === totalCellsCount - totalMinesCount)
       }
 
