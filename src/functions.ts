@@ -1,3 +1,4 @@
+import { MAP_OBJECT } from './data/constants'
 export const generateRandMineMap = (
   cellsCount:number,
   minesCount: number,
@@ -91,4 +92,13 @@ export const getAdjacentMinesCount = (
     if(minesMap[position]) count += 1
   })
   return count
+}
+
+export const putFlagOrKeepDataMap = (dataMap: number[], index: number) => {
+  if(dataMap[index] !== MAP_OBJECT.COVERED && dataMap[index] !== MAP_OBJECT.FLAG) return dataMap;
+  return [
+    ...dataMap.slice(0, index),
+    dataMap[index] === MAP_OBJECT.FLAG ? MAP_OBJECT.COVERED: MAP_OBJECT.FLAG,
+    ...dataMap.slice(index + 1),
+  ]
 }

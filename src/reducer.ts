@@ -1,5 +1,14 @@
 import { generateRandMineMap, indexToCoord, getAdjacentCoordinates, coordToIndex, getAdjacentMinesCount } from './functions';
 import { GAME_STATUS } from './data/constants';
+import {
+  generateRandMineMap,
+  indexToCoord,
+  getAdjacentCoordinates,
+  coordToIndex,
+  getAdjacentMinesCount,
+  putFlagOrKeepDataMap,
+} from './functions';
+import { GAME_STATUS, MAP_OBJECT } from './data/constants';
 
 interface ReducerState {
   dataMap: number[];
@@ -18,13 +27,6 @@ export interface ReducerAction {
 
 const NUMBER_OF_CELLS_IN_A_ROW = [9, 16, 24]
 const MINE_LIST = [10, 40, 99]
-const MAP_OBJECT = {
-  COVERED: null,
-  NO_BOMB_ARROUND: 0,
-  FLAG: 9,
-  MINE: 10,
-  HIT_MINE: 11
-}
 
 export const ReducerActions = {
   SET_MAP_INDEX: 'action$set_map_index',
@@ -49,15 +51,6 @@ export const initReducer = (mapIndex: number) => {
     totalMinesCount,
     hasCreatedMine: false
   }
-}
-
-const putFlagOrKeepDataMap = (dataMap: number[], index: number) => {
-  if(dataMap[index] !== MAP_OBJECT.COVERED && dataMap[index] !== MAP_OBJECT.FLAG) return dataMap;
-  return [
-    ...dataMap.slice(0, index),
-    dataMap[index] === MAP_OBJECT.FLAG ? MAP_OBJECT.COVERED: MAP_OBJECT.FLAG,
-    ...dataMap.slice(index + 1),
-  ]
 }
 
 const Reducer = (state: ReducerState, action: ReducerAction) => {
