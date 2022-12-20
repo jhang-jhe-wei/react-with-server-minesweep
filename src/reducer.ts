@@ -102,7 +102,7 @@ const Reducer = (state: ReducerState, action: ReducerAction) => {
     case ReducerActions.PUT_FLAG_ON_CELL: {
       return {
         ...state,
-        dataMap: putFlagOrKeepDataMap(action.payload.dataMap, action.payload.index)
+        dataMap: putFlagOrKeepDataMap(dataMap, action.payload.index)
       };
     }
     case ReducerActions.SWEEP_CELL: {

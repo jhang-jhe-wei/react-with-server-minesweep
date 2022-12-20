@@ -9,12 +9,14 @@ import Reducer, { initReducer, ReducerActions } from './reducer';
 
 const App = () => {
   const [state, dispatch] = useReducer(Reducer, 0, initReducer)
+
   const {
     mapIndex,
     gameStatus,
     hasCreatedMine,
     dataMap
   } = state
+
   const buttonClickHandler = (mapIndex: number) => {
     dispatch({type: ReducerActions.SET_MAP_INDEX, payload: {
       mapIndex
