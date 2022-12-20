@@ -96,9 +96,9 @@ const Reducer = (state: ReducerState, action: ReducerAction) => {
     }
     case ReducerActions.SWEEP_CELL: {
 
-      const checkHitMine = () => minesMap[targetIndex];
       const targetIndex = action.payload.index;
-
+      const checkHitMine = () => minesMap[targetIndex];
+      const isGameWin = () => checkNoUncoveredCells(nextDataMap, totalCellsCount, totalMinesCount);
       const gameOver = () => {
         const tempDataMap = dataMap.map((cell, index) => {
           if(index === targetIndex) return MAP_OBJECT.HIT_MINE;
@@ -117,17 +117,15 @@ const Reducer = (state: ReducerState, action: ReducerAction) => {
         gameStatus: GAME_STATUS.WIN
       })
 
-      if(checkHitMine()) return gameOver()
-      const nextDataMap = sweep(targetIndex, dataMap, minesMap)
-      if(checkNoUncoveredCells(
-        nextDataMap,
-        totalCellsCount,
-        totalMinesCount)
-      ) return gameWin(nextDataMap)
-      return {
+      const continueGame = (nextDataMap: number[]) => ({
         ...state,
         dataMap: nextDataMap
-      }
+      })
+
+      if(checkHitMine()) return gameOver()
+      const nextDataMap = sweep(targetIndex, dataMap, minesMap)
+      if(isGameWin()) return gameWin(nextDataMap)
+      return continueGame(nextDataMap)
     }
     default:
       throw Error('Unknown action: ' + action.type);
