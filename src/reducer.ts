@@ -146,8 +146,8 @@ const Reducer = (state: ReducerState, action: ReducerAction) => {
         return tempDataMap
       }
 
-      const checkNoUncoveredCells = () => {
-        const uncoveredCellsCount = dataMap.filter(cell => (cell !== MAP_OBJECT.COVERED && cell >= 0 && cell <= 8)).length;
+      const checkNoUncoveredCells = (currentDataMap: number[]) => {
+        const uncoveredCellsCount = currentDataMap.filter(cell => (cell !== MAP_OBJECT.COVERED && cell >= 0 && cell <= 8)).length;
         return (uncoveredCellsCount === totalCellsCount - totalMinesCount)
       }
 
@@ -158,7 +158,7 @@ const Reducer = (state: ReducerState, action: ReducerAction) => {
 
       if(checkHitMine()) return gameOver()
       const nextDataMap = sweep()
-      if(checkNoUncoveredCells()) return gameWin()
+      if(checkNoUncoveredCells(nextDataMap)) return gameWin()
       return {
         ...state,
         dataMap: nextDataMap
