@@ -1,15 +1,13 @@
 import {useContext} from "react";
 import AppContext from "../context";
+import {GAME_STATUS} from "../data/constants";
 import {ReducerActions} from "../reducer";
 
-type DialogProps = {
-  text: string;
-}
+const Dialog = () => {
+  const [state, dispatch] = useContext(AppContext)
+  const { gameStatus } = state
 
-const Dialog = (props: DialogProps) => {
-  const { text } = props
-  const dispatch = useContext(AppContext)
-
+  if(gameStatus === GAME_STATUS.IN_PROGRESS) return <></>
   return (
     <>
       <div className="dialog-mask">
@@ -19,7 +17,7 @@ const Dialog = (props: DialogProps) => {
         onClick={() => dispatch({type: ReducerActions.NEW_GAME})}
       >
         <p className="dialog-message">
-          {text}
+          {gameStatus}
         </p>
       </div>
     </>

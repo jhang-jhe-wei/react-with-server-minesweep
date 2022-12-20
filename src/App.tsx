@@ -40,8 +40,8 @@ const App = () => {
     <div className="container">
       <Head/>
       <div className="play-field-container">
-        { gameStatus !== GAME_STATUS.IN_PROGRESS && <Dialog text={gameStatus} /> }
         <PlayField data={dataMap} mapIndex={mapIndex} clickHandler={clickHandler}/>
+        <Dialog/>
       </div>
       <ButtonField/>
       <Footer/>
