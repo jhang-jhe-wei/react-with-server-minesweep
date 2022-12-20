@@ -6,7 +6,7 @@ import {
 } from './functions';
 import { GAME_STATUS, MAP_OBJECT } from './data/constants';
 
-interface ReducerState {
+export interface ReducerStateProps {
   dataMap: number[];
   minesMap: boolean[];
   gameStatus: string;
@@ -49,7 +49,7 @@ export const initReducer = (mapIndex: number) => {
   }
 }
 
-const Reducer = (state: ReducerState, action: ReducerAction) => {
+const Reducer = (state: ReducerStateProps, action: ReducerAction) => {
   const {
     mapIndex,
     minesMap,
