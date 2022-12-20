@@ -16,7 +16,7 @@ export interface ReducerStateProps {
   hasCreatedMine: boolean;
 }
 
-export interface ReducerAction {
+export interface ReducerActionProps {
   type: string;
   payload?: any;
 }
@@ -49,7 +49,7 @@ export const initReducer = (mapIndex: number) => {
   }
 }
 
-const Reducer = (state: ReducerStateProps, action: ReducerAction) => {
+const Reducer = (state: ReducerStateProps, action: ReducerActionProps) => {
   const {
     mapIndex,
     minesMap,
