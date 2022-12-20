@@ -1,4 +1,4 @@
-import { SHORT_CLICK_EVENT } from '../data/constants';
+import { CLICK_EVENTS } from '../data/constants';
 
 type PlayFieldProps = {
   data: (number|null)[];
@@ -6,8 +6,6 @@ type PlayFieldProps = {
   clickHandler: Function;
 }
 
-const LONG_CLICK_EVENT = 'long'
-const RIGHT_CLICK_EVENT = 'right'
 const MAP_STYLES = ['grid-cols-9', 'grid-cols-16', 'grid-cols-24']
 const getStyleBy = (value:number| null) => {
   if(value === null){
@@ -52,14 +50,14 @@ const PlayField = (props: PlayFieldProps) => {
             if(targetIndex === index){
               const duration = Date.now() - clickedAt;
               if(duration <= 500){
-                clickHandler(index, SHORT_CLICK_EVENT)
+                clickHandler(index, CLICK_EVENTS.SHORT_CLICK)
               }else{
-                clickHandler(index, LONG_CLICK_EVENT)
+                clickHandler(index, CLICK_EVENTS.LONG_CLICK)
               }
             }
           }}
           onContextMenu={(e)=>{
-            clickHandler(index, RIGHT_CLICK_EVENT)
+            clickHandler(index, CLICK_EVENTS.RIGHT_CLICK)
             e.preventDefault();
             return false;
           }}

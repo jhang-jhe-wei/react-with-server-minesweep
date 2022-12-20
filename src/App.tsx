@@ -4,7 +4,7 @@ import PlayField from './components/PlayField';
 import ButtonField from './components/ButtonField';
 import Footer from './components/Footer';
 import Dialog from './components/Dialog';
-import { SHORT_CLICK_EVENT, GAME_STATUS } from './data/constants';
+import { CLICK_EVENTS, GAME_STATUS } from './data/constants';
 import Reducer, { initReducer, ReducerActions } from './reducer';
 import AppContext from './context';
 
@@ -19,7 +19,7 @@ const App = () => {
   } = state
 
   const clickHandler = (index: number, event: string) => {
-    if(event === SHORT_CLICK_EVENT) {
+    if(event === CLICK_EVENTS.SHORT_CLICK) {
       if(!hasCreatedMine){
         dispatch({type: ReducerActions.GENERATE_MINES, payload: {
           avoidIndex: index
