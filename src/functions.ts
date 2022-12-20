@@ -108,8 +108,6 @@ export const checkNoUncoveredCells = (
   totalCellsCount: number,
   totalMinesCount: number
 ) => {
-        const uncoveredCellsCount = dataMap.filter(cell => (cell !== MAP_OBJECT.COVERED && cell >= 0 && cell <= 8)).length;
-        return (uncoveredCellsCount === totalCellsCount - totalMinesCount)
-      }
-
-
+  const uncoveredCellsCount = dataMap.filter(cell => (cell !== MAP_OBJECT.COVERED && cell >= 0 && cell <= 8)).length;
+  return (uncoveredCellsCount === totalCellsCount - totalMinesCount)
+}
