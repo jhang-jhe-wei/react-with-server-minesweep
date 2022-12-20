@@ -1,8 +1,12 @@
 import { createContext, Dispatch } from "react"
+import { initReducer, ReducerActionProps, ReducerStateProps } from "./reducer"
 type AppContextProps = [
-  any,
-  Dispatch<{type: string, payload?: any}>
+  ReducerStateProps,
+  Dispatch<ReducerActionProps>
 ]
-const AppContext = createContext<AppContextProps>([{}, () => {}])
+const AppContext = createContext<AppContextProps>([
+  initReducer(0),
+  () => {}
+])
 export default AppContext
 
