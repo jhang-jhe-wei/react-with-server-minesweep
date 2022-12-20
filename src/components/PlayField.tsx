@@ -1,13 +1,12 @@
-import { SHORT_CLICK_EVENT } from '../data/constants';
+import { useContext } from 'react';
+import AppContext from '../context';
+import { ReducerActions } from '../reducer';
 
-type PlayFieldProps = {
-  data: (number|null)[];
-  mapIndex: number;
-  clickHandler: Function;
+const CLICK_EVENTS = {
+  SHORT_CLICK: 'short',
+  LONG_CLICK: 'long',
+  RIGHT_CLICK: 'right'
 }
-
-const LONG_CLICK_EVENT = 'long'
-const RIGHT_CLICK_EVENT = 'right'
 const MAP_STYLES = ['grid-cols-9', 'grid-cols-16', 'grid-cols-24']
 const getStyleBy = (value:number| null) => {
   if(value === null){
@@ -26,13 +25,29 @@ const getStyleBy = (value:number| null) => {
   }
 }
 
-const PlayField = (props: PlayFieldProps) => {
+const PlayField = () => {
+  const [state, dispatch] = useContext(AppContext)
   const {
-    data,
     mapIndex,
-    clickHandler
-  } = props;
-
+    dataMap,
+    hasCreatedMine
+  } = state
+  const clickHandler = (index: number, event: string) => {
+    if(event === CLICK_EVENTS.SHORT_CLICK) {
+      if(!hasCreatedMine){
+        dispatch({type: ReducerActions.GENERATE_MINES, payload: {
+          avoidIndex: index
+        }})
+      }
+      dispatch({type: ReducerActions.SWEEP_CELL, payload: {
+        index: index
+      }})
+    }else{
+      dispatch({type: ReducerActions.PUT_FLAG_ON_CELL, payload: {
+        index
+      }})
+    }
+  }
 
   let targetIndex :number;
   let clickedAt: number;
@@ -40,7 +55,7 @@ const PlayField = (props: PlayFieldProps) => {
   return (
     <div className={`play-field ${MAP_STYLES[mapIndex]}`}>
       {
-        data.map((value, index) =>
+        dataMap.map((value, index) =>
         <div
           key={index}
           className={`${getStyleBy(value)}`}
@@ -52,14 +67,14 @@ const PlayField = (props: PlayFieldProps) => {
             if(targetIndex === index){
               const duration = Date.now() - clickedAt;
               if(duration <= 500){
-                clickHandler(index, SHORT_CLICK_EVENT)
+                clickHandler(index, CLICK_EVENTS.SHORT_CLICK)
               }else{
-                clickHandler(index, LONG_CLICK_EVENT)
+                clickHandler(index, CLICK_EVENTS.LONG_CLICK)
               }
             }
           }}
           onContextMenu={(e)=>{
-            clickHandler(index, RIGHT_CLICK_EVENT)
+            clickHandler(index, CLICK_EVENTS.RIGHT_CLICK)
             e.preventDefault();
             return false;
           }}
