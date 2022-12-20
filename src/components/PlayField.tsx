@@ -1,8 +1,12 @@
-import { CLICK_EVENTS } from '../data/constants';
 import { useContext } from 'react';
 import AppContext from '../context';
 import { ReducerActions } from '../reducer';
 
+const CLICK_EVENTS = {
+  SHORT_CLICK: 'short',
+  LONG_CLICK: 'long',
+  RIGHT_CLICK: 'right'
+}
 const MAP_STYLES = ['grid-cols-9', 'grid-cols-16', 'grid-cols-24']
 const getStyleBy = (value:number| null) => {
   if(value === null){

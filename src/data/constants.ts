@@ -1,8 +1,3 @@
-export const CLICK_EVENTS = {
-  SHORT_CLICK: 'short',
-  LONG_CLICK: 'long',
-  RIGHT_CLICK: 'right'
-}
 export const GAME_STATUS = {
   WIN: 'You Win!',
   LOSE: 'You Lose!',
