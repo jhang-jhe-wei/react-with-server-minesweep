@@ -4,21 +4,17 @@ import {
   checkNoUncoveredCells,
   sweep
 } from './functions';
-import { GAME_STATUS, MAP_OBJECT } from './data/constants';
+import { GAME_STATUS, MAP_OBJECT, GameStatusValue } from './data/constants';
 
+export type DataMapType = (number|null)[]
 export interface ReducerStateProps {
-  dataMap: number[];
+  dataMap: DataMapType;
   minesMap: boolean[];
-  gameStatus: string;
+  gameStatus: GameStatusValue;
   mapIndex: number;
   totalCellsCount: number;
   totalMinesCount: number;
   hasCreatedMine: boolean;
-}
-
-export interface ReducerActionProps {
-  type: string;
-  payload?: any;
 }
 
 const NUMBER_OF_CELLS_IN_A_ROW = [9, 16, 24]
@@ -32,9 +28,18 @@ export const ReducerActions = {
   PUT_FLAG_ON_CELL: 'action$put_flag_on_cell',
   SWEEP_CELL: 'action$sweep_cell',
   NEW_GAME: 'action$new_game'
-}
+} as const
 
-export const initReducer = (mapIndex: number) => {
+export type ReducerActionProps =
+    | { type: typeof ReducerActions.SET_MAP_INDEX; payload: number }
+    | { type: typeof ReducerActions.SET_GAME_STATUS; payload: GameStatusValue }
+    | { type: typeof ReducerActions.RESET_HAS_CREATED_MINES }
+    | { type: typeof ReducerActions.GENERATE_MINES; payload: number }
+    | { type: typeof ReducerActions.PUT_FLAG_ON_CELL; payload: number }
+    | { type: typeof ReducerActions.SWEEP_CELL; payload: number }
+    | { type: typeof ReducerActions.NEW_GAME }
+
+export const initReducer = (mapIndex: number): ReducerStateProps => {
   const totalCellsCount = Math.pow(NUMBER_OF_CELLS_IN_A_ROW[mapIndex], 2)
   const totalMinesCount = MINE_LIST[mapIndex]
 
@@ -63,12 +68,12 @@ const Reducer = (state: ReducerStateProps, action: ReducerActionProps) => {
       return initReducer(mapIndex);
     }
     case ReducerActions.SET_MAP_INDEX: {
-      return initReducer(action.payload.mapIndex);
+      return initReducer(action.payload);
     }
     case ReducerActions.SET_GAME_STATUS: {
       return {
         ...state,
-        gameStatus: action.payload.gameStatus
+        gameStatus: action.payload
       };
     }
     case ReducerActions.RESET_HAS_CREATED_MINES: {
@@ -83,7 +88,7 @@ const Reducer = (state: ReducerStateProps, action: ReducerActionProps) => {
         minesMap: generateRandMineMap(
           state.totalCellsCount,
           state.totalMinesCount,
-          action.payload.avoidIndex
+          action.payload
         ),
         hasCreatedMine: true
       };
@@ -91,12 +96,12 @@ const Reducer = (state: ReducerStateProps, action: ReducerActionProps) => {
     case ReducerActions.PUT_FLAG_ON_CELL: {
       return {
         ...state,
-        dataMap: putFlagOrKeepDataMap(dataMap, action.payload.index)
+        dataMap: putFlagOrKeepDataMap(dataMap, action.payload)
       };
     }
     case ReducerActions.SWEEP_CELL: {
 
-      const targetIndex = action.payload.index;
+      const targetIndex = action.payload;
       const checkHitMine = () => minesMap[targetIndex];
       const isGameWin = () => checkNoUncoveredCells(nextDataMap, totalCellsCount, totalMinesCount);
       const gameOver = () => {
@@ -111,13 +116,13 @@ const Reducer = (state: ReducerStateProps, action: ReducerActionProps) => {
         }
       }
 
-      const gameWin = (nextDataMap: number[]) => ({
+      const gameWin = (nextDataMap: DataMapType) => ({
         ...state,
         dataMap: nextDataMap,
         gameStatus: GAME_STATUS.WIN
       })
 
-      const continueGame = (nextDataMap: number[]) => ({
+      const continueGame = (nextDataMap: DataMapType) => ({
         ...state,
         dataMap: nextDataMap
       })
@@ -128,7 +133,7 @@ const Reducer = (state: ReducerStateProps, action: ReducerActionProps) => {
       return continueGame(nextDataMap)
     }
     default:
-      throw Error('Unknown action: ' + action.type);
+      return state
   }
 }
 

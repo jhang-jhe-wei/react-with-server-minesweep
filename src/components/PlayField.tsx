@@ -6,7 +6,8 @@ const CLICK_EVENTS = {
   SHORT_CLICK: 'short',
   LONG_CLICK: 'long',
   RIGHT_CLICK: 'right'
-}
+} as const
+type CLICK_EVENTS_VALUES = typeof CLICK_EVENTS[keyof typeof CLICK_EVENTS]
 const MAP_STYLES = ['grid-cols-9', 'grid-cols-16', 'grid-cols-24']
 const getStyleBy = (value:number| null) => {
   if(value === null){
@@ -32,20 +33,14 @@ const PlayField = () => {
     dataMap,
     hasCreatedMine
   } = state
-  const clickHandler = (index: number, event: string) => {
+  const clickHandler = (index: number, event: CLICK_EVENTS_VALUES) => {
     if(event === CLICK_EVENTS.SHORT_CLICK) {
       if(!hasCreatedMine){
-        dispatch({type: ReducerActions.GENERATE_MINES, payload: {
-          avoidIndex: index
-        }})
+        dispatch({type: ReducerActions.GENERATE_MINES, payload: index})
       }
-      dispatch({type: ReducerActions.SWEEP_CELL, payload: {
-        index: index
-      }})
+      dispatch({type: ReducerActions.SWEEP_CELL, payload: index})
     }else{
-      dispatch({type: ReducerActions.PUT_FLAG_ON_CELL, payload: {
-        index
-      }})
+      dispatch({type: ReducerActions.PUT_FLAG_ON_CELL, payload: index})
     }
   }
 

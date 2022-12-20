@@ -1,4 +1,5 @@
 import { MAP_OBJECT } from './data/constants'
+import { DataMapType } from './reducer';
 export const generateRandMineMap = (
   cellsCount:number,
   minesCount: number,
@@ -94,7 +95,7 @@ export const getAdjacentMinesCount = (
   return count
 }
 
-export const putFlagOrKeepDataMap = (dataMap: number[], index: number) => {
+export const putFlagOrKeepDataMap = (dataMap: DataMapType, index: number) => {
   if(dataMap[index] !== MAP_OBJECT.COVERED && dataMap[index] !== MAP_OBJECT.FLAG) return dataMap;
   return [
     ...dataMap.slice(0, index),
@@ -104,7 +105,7 @@ export const putFlagOrKeepDataMap = (dataMap: number[], index: number) => {
 }
 
 export const checkNoUncoveredCells = (
-  dataMap: number[],
+  dataMap: DataMapType,
   totalCellsCount: number,
   totalMinesCount: number
 ) => {
@@ -114,9 +115,9 @@ export const checkNoUncoveredCells = (
 
 export const sweep = (
   targetIndex: number,
-  dataMap: number[],
+  dataMap: DataMapType,
   minesMap: boolean[],
-): number[] => {
+): DataMapType => {
   const scannedList = Array(dataMap.length).fill(false)
   const tempDataMap = dataMap.slice()
   const numberOfCellsInARow = Math.sqrt(dataMap.length)

@@ -8,7 +8,7 @@ const ButtonField = () => {
   const clickHandler = (mapIndex: number) => {
     dispatch({
       type: ReducerActions.SET_MAP_INDEX,
-      payload: { mapIndex }
+      payload: mapIndex
     })
   }
 
