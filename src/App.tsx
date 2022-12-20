@@ -4,7 +4,7 @@ import PlayField from './components/PlayField';
 import ButtonField from './components/ButtonField';
 import Footer from './components/Footer';
 import Dialog from './components/Dialog';
-import { SHORT_CLICK_EVENT } from './data/constants';
+import { SHORT_CLICK_EVENT, GAME_STATUS } from './data/constants';
 import Reducer, { initReducer, ReducerActions } from './reducer';
 
 const App = () => {
@@ -45,7 +45,7 @@ const App = () => {
     <div className="container">
       <Head/>
       <div className="play-field-container">
-        { gameStatus !== GAMEING && <Dialog text={gameStatus} clickHandler={()=>console.log('reload')} /> }
+        { gameStatus !== GAME_STATUS.IN_PROGRESS && <Dialog text={gameStatus} clickHandler={()=>dispatch({type: ReducerActions.NEW_GAME})} /> }
         <PlayField data={data} mapIndex={mapIndex} clickHandler={clickHandler}/>
       </div>
       <ButtonField clickHandler={buttonClickHandler}/>

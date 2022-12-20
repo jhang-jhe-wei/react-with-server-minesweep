@@ -1,4 +1,5 @@
 import { randMinesMap, indexToCoord, getAdjacentCoordinates, coordToIndex } from './functions';
+import { GAME_STATUS } from './data/constants';
 
 interface ReducerState {
   dataMap: number[];
@@ -22,9 +23,6 @@ const NO_BOMB_ARROUND_CODE = 0
 const FLAG_CODE = 9
 const MINE_CODE = 10
 const HIT_MINE_CODE = 11
-const GAME_WIN = 'You Win!'
-const GAME_LOSE = 'You Lose!'
-const GAMEING = 'gaming'
 
 export const ReducerActions = {
   SET_MAP_INDEX: 'action$set_map_index',
@@ -32,7 +30,8 @@ export const ReducerActions = {
   RESET_HAS_CREATED_MINES: 'action$reset_has_create_mines',
   GENERATE_MINES: 'action$generate_mines',
   PUT_FLAG_ON_CELL: 'action$put_flag_on_cell',
-  SWEEP_CELL: 'action$sweep_cell'
+  SWEEP_CELL: 'action$sweep_cell',
+  NEW_GAME: 'action$new_game'
 }
 
 export const initReducer = (mapIndex: number) => {
@@ -42,7 +41,7 @@ export const initReducer = (mapIndex: number) => {
   return {
     dataMap: Array(totalCellsCount).fill(null),
     minesMap: Array(totalMinesCount).fill(false),
-    gameStatus: GAMEING,
+    gameStatus: GAME_STATUS.IN_PROGRESS,
     mapIndex: mapIndex,
     totalCellsCount,
     totalMinesCount,
@@ -68,6 +67,9 @@ const Reducer = (state: ReducerState, action: ReducerAction) => {
   } = state
 
   switch (action.type) {
+    case ReducerActions.NEW_GAME: {
+      return initReducer(mapIndex);
+    }
     case ReducerActions.SET_MAP_INDEX: {
       return initReducer(action.payload.mapIndex);
     }
@@ -127,7 +129,7 @@ const Reducer = (state: ReducerState, action: ReducerAction) => {
         return {
           ...state,
           dataMap: tempDataMap,
-          gameStatus: GAME_LOSE
+          gameStatus: GAME_STATUS.LOSE
         }
       }
 
@@ -159,7 +161,7 @@ const Reducer = (state: ReducerState, action: ReducerAction) => {
 
       const gameWin = () => ({
         ...state,
-        gameStatus: GAME_WIN
+        gameStatus: GAME_STATUS.WIN
       })
 
       if(checkHitMine()) return gameOver()
