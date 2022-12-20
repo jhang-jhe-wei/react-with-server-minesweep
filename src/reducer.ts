@@ -1,11 +1,8 @@
 import {
   generateRandMineMap,
-  indexToCoord,
-  getAdjacentCoordinates,
-  coordToIndex,
-  getAdjacentMinesCount,
   putFlagOrKeepDataMap,
-  checkNoUncoveredCells
+  checkNoUncoveredCells,
+  sweep
 } from './functions';
 import { GAME_STATUS, MAP_OBJECT } from './data/constants';
 
@@ -99,11 +96,8 @@ const Reducer = (state: ReducerState, action: ReducerAction) => {
     }
     case ReducerActions.SWEEP_CELL: {
 
-      const targetIndex = action.payload.index
-      const maxIndexOfRow = NUMBER_OF_CELLS_IN_A_ROW[mapIndex] - 1
-      const numberOfCellsInARow = NUMBER_OF_CELLS_IN_A_ROW[mapIndex]
-
       const checkHitMine = () => minesMap[targetIndex];
+      const targetIndex = action.payload.index;
 
       const gameOver = () => {
         const tempDataMap = dataMap.map((cell, index) => {
@@ -117,27 +111,6 @@ const Reducer = (state: ReducerState, action: ReducerAction) => {
         }
       }
 
-      const sweep = () => {
-        const scannedList = Array(dataMap.length).fill(false)
-        const tempDataMap = dataMap.slice()
-        const recursiveSweep = (index: number) => {
-          if(scannedList[index]) return;
-          const result = getAdjacentMinesCount(index, numberOfCellsInARow, minesMap);
-          scannedList[index] = true;
-          if(result !== MAP_OBJECT.NO_BOMB_ARROUND){
-            tempDataMap[index] = result;
-            return;
-          }
-          tempDataMap[index] = MAP_OBJECT.NO_BOMB_ARROUND;
-          const coords = getAdjacentCoordinates(...indexToCoord(index, numberOfCellsInARow), maxIndexOfRow)
-          coords.forEach(coord => {
-            recursiveSweep(coordToIndex(coord, numberOfCellsInARow))
-          })
-        }
-        recursiveSweep(targetIndex)
-        return tempDataMap
-      }
-
       const gameWin = (nextDataMap: number[]) => ({
         ...state,
         dataMap: nextDataMap,
@@ -145,7 +118,7 @@ const Reducer = (state: ReducerState, action: ReducerAction) => {
       })
 
       if(checkHitMine()) return gameOver()
-      const nextDataMap = sweep()
+      const nextDataMap = sweep(targetIndex, dataMap, minesMap)
       if(checkNoUncoveredCells(
         nextDataMap,
         totalCellsCount,

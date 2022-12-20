@@ -111,3 +111,32 @@ export const checkNoUncoveredCells = (
   const uncoveredCellsCount = dataMap.filter(cell => (cell !== MAP_OBJECT.COVERED && cell >= 0 && cell <= 8)).length;
   return (uncoveredCellsCount === totalCellsCount - totalMinesCount)
 }
+
+export const sweep = (
+  targetIndex: number,
+  dataMap: number[],
+  minesMap: boolean[],
+): number[] => {
+  const scannedList = Array(dataMap.length).fill(false)
+  const tempDataMap = dataMap.slice()
+  const numberOfCellsInARow = Math.sqrt(dataMap.length)
+  const maxIndexOfARow = numberOfCellsInARow - 1
+  const recursiveSweep = (index: number) => {
+    if(scannedList[index]) return;
+    const result = getAdjacentMinesCount(index, numberOfCellsInARow, minesMap);
+    scannedList[index] = true;
+    if(result !== MAP_OBJECT.NO_BOMB_ARROUND){
+      tempDataMap[index] = result;
+      return;
+    }
+    tempDataMap[index] = MAP_OBJECT.NO_BOMB_ARROUND;
+    const coords = getAdjacentCoordinates(...indexToCoord(index, numberOfCellsInARow), maxIndexOfARow)
+    coords.forEach(coord => {
+      recursiveSweep(coordToIndex(coord, numberOfCellsInARow))
+    })
+  }
+  recursiveSweep(targetIndex)
+  return tempDataMap
+}
+
+
