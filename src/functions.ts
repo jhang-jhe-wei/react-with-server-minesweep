@@ -102,3 +102,14 @@ export const putFlagOrKeepDataMap = (dataMap: number[], index: number) => {
     ...dataMap.slice(index + 1),
   ]
 }
+
+export const checkNoUncoveredCells = (
+  dataMap: number[],
+  totalCellsCount: number,
+  totalMinesCount: number
+) => {
+        const uncoveredCellsCount = dataMap.filter(cell => (cell !== MAP_OBJECT.COVERED && cell >= 0 && cell <= 8)).length;
+        return (uncoveredCellsCount === totalCellsCount - totalMinesCount)
+      }
+
+

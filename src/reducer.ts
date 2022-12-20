@@ -1,5 +1,3 @@
-import { generateRandMineMap, indexToCoord, getAdjacentCoordinates, coordToIndex, getAdjacentMinesCount } from './functions';
-import { GAME_STATUS } from './data/constants';
 import {
   generateRandMineMap,
   indexToCoord,
@@ -7,6 +5,7 @@ import {
   coordToIndex,
   getAdjacentMinesCount,
   putFlagOrKeepDataMap,
+  checkNoUncoveredCells
 } from './functions';
 import { GAME_STATUS, MAP_OBJECT } from './data/constants';
 
@@ -139,11 +138,6 @@ const Reducer = (state: ReducerState, action: ReducerAction) => {
         return tempDataMap
       }
 
-      const checkNoUncoveredCells = (currentDataMap: number[]) => {
-        const uncoveredCellsCount = currentDataMap.filter(cell => (cell !== MAP_OBJECT.COVERED && cell >= 0 && cell <= 8)).length;
-        return (uncoveredCellsCount === totalCellsCount - totalMinesCount)
-      }
-
       const gameWin = () => ({
         ...state,
         gameStatus: GAME_STATUS.WIN
@@ -151,7 +145,11 @@ const Reducer = (state: ReducerState, action: ReducerAction) => {
 
       if(checkHitMine()) return gameOver()
       const nextDataMap = sweep()
-      if(checkNoUncoveredCells(nextDataMap)) return gameWin()
+      if(checkNoUncoveredCells(
+        nextDataMap,
+        totalCellsCount,
+        totalMinesCount)
+      ) return gameWin()
       return {
         ...state,
         dataMap: nextDataMap
