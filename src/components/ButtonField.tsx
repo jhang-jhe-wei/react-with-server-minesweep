@@ -4,7 +4,7 @@ import { ReducerActions } from "../reducer";
 
 const BUTTON_TEXT_LIST = ['Small', 'Medium', 'Large'];
 const ButtonField = () => {
-  const dispatch = useContext(AppContext)
+  const [, dispatch] = useContext(AppContext)
   const clickHandler = (mapIndex: number) => {
     dispatch({
       type: ReducerActions.SET_MAP_INDEX,

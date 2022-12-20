@@ -36,7 +36,7 @@ const App = () => {
   }
 
   return (
-    <AppContext.Provider value={dispatch}>
+    <AppContext.Provider value={[state, dispatch]}>
     <div className="container">
       <Head/>
       <div className="play-field-container">
