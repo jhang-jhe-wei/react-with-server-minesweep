@@ -1,4 +1,9 @@
-export const randMinesMap = (cellsCount:number, minesCount: number, avoidIndex: number): boolean[] => {
+export const generateRandMineMap = (
+  cellsCount:number,
+  minesCount: number,
+  avoidIndex: number
+):boolean[] => {
+
   let map = Array(cellsCount).fill(false);
   const random = (): number => {
     let random = Math.floor(Math.random() * cellsCount);

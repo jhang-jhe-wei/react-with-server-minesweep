@@ -1,4 +1,4 @@
-import { randMinesMap, indexToCoord, getAdjacentCoordinates, coordToIndex } from './functions';
+import { generateRandMineMap, indexToCoord, getAdjacentCoordinates, coordToIndex } from './functions';
 import { GAME_STATUS } from './data/constants';
 
 interface ReducerState {
@@ -91,7 +91,7 @@ const Reducer = (state: ReducerState, action: ReducerAction) => {
     case ReducerActions.GENERATE_MINES: {
       return {
         ...state,
-        minesMap: randMinesMap(
+        minesMap: generateRandMineMap(
           state.totalCellsCount,
           state.totalMinesCount,
           action.payload.avoidIndex
