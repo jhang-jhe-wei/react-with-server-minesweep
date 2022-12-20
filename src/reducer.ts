@@ -1,5 +1,4 @@
-import { NUMBER_OF_CELLS_IN_A_ROW, GAMEING, MINE_LIST } from "./data/constants";
-import { randMinesMap } from "./functions";
+import { randMinesMap, indexToCoord, getAdjacentCoordinates, coordToIndex } from './functions';
 
 interface ReducerState {
   dataMap: number[];
@@ -11,16 +10,29 @@ interface ReducerState {
   hasCreatedMine: boolean;
 }
 
-interface ReducerAction {
+export interface ReducerAction {
   type: string;
   payload?: any;
 }
+
+const NUMBER_OF_CELLS_IN_A_ROW = [9, 16, 24]
+const MINE_LIST = [10, 40, 99]
+const COVERD_CODE = null
+const NO_BOMB_ARROUND_CODE = 0
+const FLAG_CODE = 9
+const MINE_CODE = 10
+const HIT_MINE_CODE = 11
+const GAME_WIN = 'You Win!'
+const GAME_LOSE = 'You Lose!'
+const GAMEING = 'gaming'
 
 export const ReducerActions = {
   SET_MAP_INDEX: 'action$set_map_index',
   SET_GAME_STATUS: 'action$set_game_status',
   RESET_HAS_CREATED_MINES: 'action$reset_has_create_mines',
-  GENERATE_MINES: 'action$generate_mines'
+  GENERATE_MINES: 'action$generate_mines',
+  PUT_FLAG_ON_CELL: 'action$put_flag_on_cell',
+  SWEEP_CELL: 'action$sweep_cell'
 }
 
 export const initReducer = (mapIndex: number) => {
@@ -37,7 +49,24 @@ export const initReducer = (mapIndex: number) => {
     hasCreatedMine: false
   } }
 
+const putFlagOrKeepDataMap = (dataMap: number[], index: number) => {
+  if(dataMap[index] !== COVERD_CODE && dataMap[index] !== FLAG_CODE) return dataMap;
+  return [
+    ...dataMap.slice(0, index),
+    dataMap[index] === FLAG_CODE ? COVERD_CODE: FLAG_CODE,
+    ...dataMap.slice(index + 1),
+  ]
+}
+
 const Reducer = (state: ReducerState, action: ReducerAction) => {
+  const {
+    mapIndex,
+    minesMap,
+    dataMap,
+    totalCellsCount,
+    totalMinesCount
+  } = state
+
   switch (action.type) {
     case ReducerActions.SET_MAP_INDEX: {
       return initReducer(action.payload.mapIndex);
@@ -64,6 +93,82 @@ const Reducer = (state: ReducerState, action: ReducerAction) => {
         ),
         hasCreatedMine: true
       };
+    }
+    case ReducerActions.PUT_FLAG_ON_CELL: {
+      return {
+        ...state,
+        dataMap: putFlagOrKeepDataMap(action.payload.dataMap, action.payload.index)
+      };
+    }
+    case ReducerActions.SWEEP_CELL: {
+
+      const targetIndex = action.payload.index
+      const maxIndexOfRow = NUMBER_OF_CELLS_IN_A_ROW[mapIndex] - 1
+      const numberOfCellsInARow = NUMBER_OF_CELLS_IN_A_ROW[mapIndex]
+
+      const getArroundMinesCount = (index: number) => {
+        const [x, y] = indexToCoord(index, numberOfCellsInARow)
+        const adjacentArray = getAdjacentCoordinates(x, y, maxIndexOfRow)
+        let count = 0
+        adjacentArray.forEach((point) => {
+          const position = coordToIndex(point, numberOfCellsInARow)
+          if(minesMap[position]) count += 1
+        })
+        return count
+      }
+
+      const checkHitMine = () => minesMap[targetIndex];
+
+      const gameOver = () => {
+        const tempDataMap = dataMap.map((cell, index) => {
+          if(index === targetIndex) return HIT_MINE_CODE;
+          return minesMap[index]? MINE_CODE: cell
+        })
+        return {
+          ...state,
+          dataMap: tempDataMap,
+          gameStatus: GAME_LOSE
+        }
+      }
+
+      const sweep = () => {
+        const scannedList = Array(dataMap.length).fill(false)
+        const tempDataMap = dataMap.slice()
+        const recursiveSweep = (index: number) => {
+          if(scannedList[index]) return;
+          const result = getArroundMinesCount(index);
+          scannedList[index] = true;
+          if(result !== NO_BOMB_ARROUND_CODE){
+            tempDataMap[index] = result;
+            return;
+          }
+          tempDataMap[index] = NO_BOMB_ARROUND_CODE;
+          const coords = getAdjacentCoordinates(...indexToCoord(index, numberOfCellsInARow), maxIndexOfRow)
+          coords.forEach(coord => {
+            recursiveSweep(coordToIndex(coord, numberOfCellsInARow))
+          })
+        }
+        recursiveSweep(targetIndex)
+        return tempDataMap
+      }
+
+      const checkNoUncoveredCells = () => {
+        const uncoveredCellsCount = dataMap.filter(cell => (cell !== COVERD_CODE && cell >= 0 && cell <= 8)).length;
+        return (uncoveredCellsCount === totalCellsCount - totalMinesCount)
+      }
+
+      const gameWin = () => ({
+        ...state,
+        gameStatus: GAME_WIN
+      })
+
+      if(checkHitMine()) return gameOver()
+      const tempDataMap = sweep()
+      if(checkNoUncoveredCells()) return gameWin()
+      return {
+        ...state,
+        dataMap: tempDataMap
+      }
     }
     default:
       throw Error('Unknown action: ' + action.type);
