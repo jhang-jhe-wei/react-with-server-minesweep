@@ -12,8 +12,8 @@ const App = () => {
   const {
     mapIndex,
     gameStatus,
-    hasCreatedMine: init,
-    dataMap: data
+    hasCreatedMine,
+    dataMap
   } = state
   const buttonClickHandler = (mapIndex: number) => {
     dispatch({type: ReducerActions.SET_MAP_INDEX, payload: {
@@ -21,12 +21,9 @@ const App = () => {
     }})
   }
 
-  const clickHandler = (
-    index: number,
-    event: string
-  ) => {
+  const clickHandler = (index: number, event: string) => {
     if(event === SHORT_CLICK_EVENT) {
-      if(!init){
+      if(!hasCreatedMine){
         dispatch({type: ReducerActions.GENERATE_MINES, payload: {
           avoidIndex: index
         }})
@@ -46,7 +43,7 @@ const App = () => {
       <Head/>
       <div className="play-field-container">
         { gameStatus !== GAME_STATUS.IN_PROGRESS && <Dialog text={gameStatus} clickHandler={()=>dispatch({type: ReducerActions.NEW_GAME})} /> }
-        <PlayField data={data} mapIndex={mapIndex} clickHandler={clickHandler}/>
+        <PlayField data={dataMap} mapIndex={mapIndex} clickHandler={clickHandler}/>
       </div>
       <ButtonField clickHandler={buttonClickHandler}/>
       <Footer/>

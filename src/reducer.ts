@@ -26,7 +26,6 @@ const MAP_OBJECT = {
   HIT_MINE: 11
 }
 
-
 export const ReducerActions = {
   SET_MAP_INDEX: 'action$set_map_index',
   SET_GAME_STATUS: 'action$set_game_status',
@@ -49,7 +48,8 @@ export const initReducer = (mapIndex: number) => {
     totalCellsCount,
     totalMinesCount,
     hasCreatedMine: false
-  } }
+  }
+}
 
 const putFlagOrKeepDataMap = (dataMap: number[], index: number) => {
   if(dataMap[index] !== MAP_OBJECT.COVERED && dataMap[index] !== MAP_OBJECT.FLAG) return dataMap;
@@ -168,11 +168,11 @@ const Reducer = (state: ReducerState, action: ReducerAction) => {
       })
 
       if(checkHitMine()) return gameOver()
-      const tempDataMap = sweep()
+      const nextDataMap = sweep()
       if(checkNoUncoveredCells()) return gameWin()
       return {
         ...state,
-        dataMap: tempDataMap
+        dataMap: nextDataMap
       }
     }
     default:
