@@ -1,12 +1,16 @@
-type ButtonFieldProps = {
-  clickHandler: Function;
-}
+import {useContext} from "react";
+import AppContext from "../context";
+import { ReducerActions } from "../reducer";
 
 const BUTTON_TEXT_LIST = ['Small', 'Medium', 'Large'];
-const ButtonField = (props: ButtonFieldProps) => {
-  const {
-    clickHandler
-  } = props
+const ButtonField = () => {
+  const dispatch = useContext(AppContext)
+  const clickHandler = (mapIndex: number) => {
+    dispatch({
+      type: ReducerActions.SET_MAP_INDEX,
+      payload: { mapIndex }
+    })
+  }
 
   return (
     <div className="buttons-field">

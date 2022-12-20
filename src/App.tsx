@@ -6,6 +6,7 @@ import Footer from './components/Footer';
 import Dialog from './components/Dialog';
 import { SHORT_CLICK_EVENT, GAME_STATUS } from './data/constants';
 import Reducer, { initReducer, ReducerActions } from './reducer';
+import AppContext from './context';
 
 const App = () => {
   const [state, dispatch] = useReducer(Reducer, 0, initReducer)
@@ -16,12 +17,6 @@ const App = () => {
     hasCreatedMine,
     dataMap
   } = state
-
-  const buttonClickHandler = (mapIndex: number) => {
-    dispatch({type: ReducerActions.SET_MAP_INDEX, payload: {
-      mapIndex
-    }})
-  }
 
   const clickHandler = (index: number, event: string) => {
     if(event === SHORT_CLICK_EVENT) {
@@ -41,15 +36,17 @@ const App = () => {
   }
 
   return (
+    <AppContext.Provider value={dispatch}>
     <div className="container">
       <Head/>
       <div className="play-field-container">
         { gameStatus !== GAME_STATUS.IN_PROGRESS && <Dialog text={gameStatus} clickHandler={()=>dispatch({type: ReducerActions.NEW_GAME})} /> }
         <PlayField data={dataMap} mapIndex={mapIndex} clickHandler={clickHandler}/>
       </div>
-      <ButtonField clickHandler={buttonClickHandler}/>
+      <ButtonField/>
       <Footer/>
     </div>
+    </AppContext.Provider>
   );
 }
 
