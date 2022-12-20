@@ -138,8 +138,9 @@ const Reducer = (state: ReducerState, action: ReducerAction) => {
         return tempDataMap
       }
 
-      const gameWin = () => ({
+      const gameWin = (nextDataMap: number[]) => ({
         ...state,
+        dataMap: nextDataMap,
         gameStatus: GAME_STATUS.WIN
       })
 
@@ -149,7 +150,7 @@ const Reducer = (state: ReducerState, action: ReducerAction) => {
         nextDataMap,
         totalCellsCount,
         totalMinesCount)
-      ) return gameWin()
+      ) return gameWin(nextDataMap)
       return {
         ...state,
         dataMap: nextDataMap
