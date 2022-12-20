@@ -1,4 +1,4 @@
-import { generateRandMineMap, indexToCoord, getAdjacentCoordinates, coordToIndex } from './functions';
+import { generateRandMineMap, indexToCoord, getAdjacentCoordinates, coordToIndex, getAdjacentMinesCount } from './functions';
 import { GAME_STATUS } from './data/constants';
 
 interface ReducerState {
@@ -111,17 +111,6 @@ const Reducer = (state: ReducerState, action: ReducerAction) => {
       const maxIndexOfRow = NUMBER_OF_CELLS_IN_A_ROW[mapIndex] - 1
       const numberOfCellsInARow = NUMBER_OF_CELLS_IN_A_ROW[mapIndex]
 
-      const getArroundMinesCount = (index: number) => {
-        const [x, y] = indexToCoord(index, numberOfCellsInARow)
-        const adjacentArray = getAdjacentCoordinates(x, y, maxIndexOfRow)
-        let count = 0
-        adjacentArray.forEach((point) => {
-          const position = coordToIndex(point, numberOfCellsInARow)
-          if(minesMap[position]) count += 1
-        })
-        return count
-      }
-
       const checkHitMine = () => minesMap[targetIndex];
 
       const gameOver = () => {
@@ -141,7 +130,7 @@ const Reducer = (state: ReducerState, action: ReducerAction) => {
         const tempDataMap = dataMap.slice()
         const recursiveSweep = (index: number) => {
           if(scannedList[index]) return;
-          const result = getArroundMinesCount(index);
+          const result = getAdjacentMinesCount(index, numberOfCellsInARow, minesMap);
           scannedList[index] = true;
           if(result !== MAP_OBJECT.NO_BOMB_ARROUND){
             tempDataMap[index] = result;

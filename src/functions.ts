@@ -14,7 +14,11 @@ export const generateRandMineMap = (
   return map;
 }
 
-export const getAdjacentCoordinates = (x: number, y:number, max:number): [number, number][] => {
+export const getAdjacentCoordinates = (
+  x: number,
+  y:number,
+  max:number
+): [number, number][] => {
   // 定義一個空的座標陣列
   const coords: [number, number][] = [];
 
@@ -73,3 +77,18 @@ export const coordToIndex = (point: [number, number], numberOfCellsInARow: numbe
   point[1] * numberOfCellsInARow + point[0]
 )
 
+export const getAdjacentMinesCount = (
+  index: number,
+  numberOfCellsInARow: number,
+  minesMap: boolean[]
+) => {
+  const maxIndexOfRow = numberOfCellsInARow - 1
+  const [x, y] = indexToCoord(index, numberOfCellsInARow)
+  const adjacentArray = getAdjacentCoordinates(x, y, maxIndexOfRow)
+  let count = 0
+  adjacentArray.forEach((point) => {
+    const position = coordToIndex(point, numberOfCellsInARow)
+    if(minesMap[position]) count += 1
+  })
+  return count
+}
