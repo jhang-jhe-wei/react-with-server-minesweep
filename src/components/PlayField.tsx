@@ -1,10 +1,7 @@
 import { CLICK_EVENTS } from '../data/constants';
-
-type PlayFieldProps = {
-  data: (number|null)[];
-  mapIndex: number;
-  clickHandler: Function;
-}
+import { useContext } from 'react';
+import AppContext from '../context';
+import { ReducerActions } from '../reducer';
 
 const MAP_STYLES = ['grid-cols-9', 'grid-cols-16', 'grid-cols-24']
 const getStyleBy = (value:number| null) => {
@@ -24,13 +21,29 @@ const getStyleBy = (value:number| null) => {
   }
 }
 
-const PlayField = (props: PlayFieldProps) => {
+const PlayField = () => {
+  const [state, dispatch] = useContext(AppContext)
   const {
-    data,
     mapIndex,
-    clickHandler
-  } = props;
-
+    dataMap,
+    hasCreatedMine
+  } = state
+  const clickHandler = (index: number, event: string) => {
+    if(event === CLICK_EVENTS.SHORT_CLICK) {
+      if(!hasCreatedMine){
+        dispatch({type: ReducerActions.GENERATE_MINES, payload: {
+          avoidIndex: index
+        }})
+      }
+      dispatch({type: ReducerActions.SWEEP_CELL, payload: {
+        index: index
+      }})
+    }else{
+      dispatch({type: ReducerActions.PUT_FLAG_ON_CELL, payload: {
+        index
+      }})
+    }
+  }
 
   let targetIndex :number;
   let clickedAt: number;
@@ -38,7 +51,7 @@ const PlayField = (props: PlayFieldProps) => {
   return (
     <div className={`play-field ${MAP_STYLES[mapIndex]}`}>
       {
-        data.map((value, index) =>
+        dataMap.map((value, index) =>
         <div
           key={index}
           className={`${getStyleBy(value)}`}
