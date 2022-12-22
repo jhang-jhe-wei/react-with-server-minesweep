@@ -35,7 +35,7 @@ jobs:
       uses: actions/download-artifact@v1
       with:
         name: out
-    - run: echo 'react-minesweep.wells.tw' > ./out/CNAME
+    - run: echo '${{ github.event.repository.name }}.wells.tw' > ./out/CNAME
     - name: Deploy
       uses: peaceiris/actions-gh-pages@v3
       with:
