@@ -1,4 +1,4 @@
-import Axios from 'axios';
+import Axios, { AxiosPromise } from 'axios';
 
 type FetchTokenResponse = {
   token: string;
@@ -30,4 +30,39 @@ export const fetchToken = async (size: number, mines: number): Promise<string> =
       return 'An unexpected error occurred';
     }
   }
+}
+
+type EmptyCell = {
+  x: number,
+  y: number,
+  minesAround: number,
+  isOpen: boolean
+}
+
+type Point ={
+  x: number;
+  y: number
+}
+
+export type SweepResponse = {
+  userwins: boolean;
+  minehit?: boolean;
+  minesAround: number;
+  emptyCells: EmptyCell[];
+  mines?:  Point[];
+  status: 'ok'| 'error';
+  code: number;
+  message?: string;
+}
+
+export const sweep = (token: string, x: number, y: number): AxiosPromise<SweepResponse> => {
+  const params = {
+    request: 'sweep',
+    token,
+    x,
+    y
+  }
+
+  return Axios.get<SweepResponse>(HOST, { params })
+
 }

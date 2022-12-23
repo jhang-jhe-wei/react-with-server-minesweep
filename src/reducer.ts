@@ -2,7 +2,8 @@ import {
   generateRandMineMap,
   putFlagOrKeepDataMap,
   checkNoUncoveredCells,
-  sweep
+  sweep,
+  coordToIndex
 } from './functions';
 import {
   GAME_STATUS,
@@ -11,6 +12,7 @@ import {
   NUMBER_OF_CELLS_IN_A_ROW,
   MINE_LIST
 } from './data/constants';
+import {SweepResponse} from './serivce';
 
 export type DataMapType = (number|null)[]
 export interface ReducerStateProps {
@@ -35,13 +37,17 @@ export const ReducerActions = {
   SET_TOKEN: 'action$set_token'
 } as const
 
+interface SweepParams extends SweepResponse {
+  targetIndex: number
+}
+
 export type ReducerActionProps =
     | { type: typeof ReducerActions.SET_MAP_INDEX; payload: number }
     | { type: typeof ReducerActions.SET_GAME_STATUS; payload: GameStatusValue }
     | { type: typeof ReducerActions.RESET_HAS_CREATED_MINES }
     | { type: typeof ReducerActions.GENERATE_MINES; payload: number }
     | { type: typeof ReducerActions.PUT_FLAG_ON_CELL; payload: number }
-    | { type: typeof ReducerActions.SWEEP_CELL; payload: number }
+    | { type: typeof ReducerActions.SWEEP_CELL; payload: SweepParams }
     | { type: typeof ReducerActions.NEW_GAME }
     | { type: typeof ReducerActions.SET_TOKEN, payload: string }
 
@@ -113,37 +119,45 @@ const Reducer = (state: ReducerStateProps, action: ReducerActionProps) => {
       };
     }
     case ReducerActions.SWEEP_CELL: {
+      const {
+        userwins,
+        minehit,
+        minesAround,
+        emptyCells,
+        mines,
+        targetIndex
+      } = action.payload
 
-      const targetIndex = action.payload;
-      const checkHitMine = () => minesMap[targetIndex];
-      const isGameWin = () => checkNoUncoveredCells(nextDataMap, totalCellsCount, totalMinesCount);
-      const gameOver = () => {
-        const tempDataMap = dataMap.map((cell, index) => {
-          if(index === targetIndex) return MAP_OBJECT.HIT_MINE;
-          return minesMap[index]? MAP_OBJECT.MINE: cell
-        })
-        return {
-          ...state,
-          dataMap: tempDataMap,
-          gameStatus: GAME_STATUS.LOSE
-        }
+      const getGameStatus = () => {
+        if(userwins) return GAME_STATUS.WIN
+        if(minehit) return GAME_STATUS.LOSE
+        return GAME_STATUS.IN_PROGRESS
       }
 
-      const gameWin = (nextDataMap: DataMapType) => ({
-        ...state,
-        dataMap: nextDataMap,
-        gameStatus: GAME_STATUS.WIN
-      })
+      const getDataMap = () => {
+        const tempDataMap = dataMap.slice();
+        if(minehit && mines) {
+          mines.forEach(point => {
+            const index = coordToIndex([point.x, point.y], NUMBER_OF_CELLS_IN_A_ROW[mapIndex])
+            tempDataMap[index] = MAP_OBJECT.MINE
+          })
+        }else if(userwins) {
+          tempDataMap[targetIndex] = minesAround
+        }else {
+          tempDataMap[targetIndex] = minesAround
+          emptyCells.forEach(cell => {
+            const index = coordToIndex([cell.x, cell.y], NUMBER_OF_CELLS_IN_A_ROW[mapIndex])
+            tempDataMap[index] = cell.minesAround
+          })
+        }
+        return tempDataMap;
+      }
 
-      const continueGame = (nextDataMap: DataMapType) => ({
+      return {
         ...state,
-        dataMap: nextDataMap
-      })
-
-      if(checkHitMine()) return gameOver()
-      const nextDataMap = sweep(targetIndex, dataMap, minesMap)
-      if(isGameWin()) return gameWin(nextDataMap)
-      return continueGame(nextDataMap)
+        gameStatus: getGameStatus(),
+        dataMap: getDataMap()
+      }
     }
     default:
       return state

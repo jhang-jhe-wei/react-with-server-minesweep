@@ -1,6 +1,9 @@
 import { useContext } from 'react';
 import AppContext from '../context';
 import { ReducerActions } from '../reducer';
+import { sweep } from '../serivce';
+import { indexToCoord } from '../functions';
+import {NUMBER_OF_CELLS_IN_A_ROW} from '../data/constants';
 
 const CLICK_EVENTS = {
   SHORT_CLICK: 'short',
@@ -31,14 +34,20 @@ const PlayField = () => {
   const {
     mapIndex,
     dataMap,
-    hasCreatedMine
+    token
   } = state
+
+  const rightClickCell = async (index: number) => {
+      const [x, y] = indexToCoord(index, NUMBER_OF_CELLS_IN_A_ROW[mapIndex])
+    await sweep(token, x, y).then(res => {
+      const payload = { ...res.data, targetIndex: index }
+        dispatch({type: ReducerActions.SWEEP_CELL, payload})
+      })
+  }
+
   const clickHandler = (index: number, event: CLICK_EVENTS_VALUES) => {
     if(event === CLICK_EVENTS.SHORT_CLICK) {
-      if(!hasCreatedMine){
-        dispatch({type: ReducerActions.GENERATE_MINES, payload: index})
-      }
-      dispatch({type: ReducerActions.SWEEP_CELL, payload: index})
+      rightClickCell(index)
     }else{
       dispatch({type: ReducerActions.PUT_FLAG_ON_CELL, payload: index})
     }
