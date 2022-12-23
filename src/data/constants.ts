@@ -13,3 +13,5 @@ export const MAP_OBJECT = {
   MINE: 10,
   HIT_MINE: 11
 }
+export const NUMBER_OF_CELLS_IN_A_ROW = [9, 16, 24]
+export const MINE_LIST = [10, 40, 99]

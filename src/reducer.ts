@@ -4,7 +4,13 @@ import {
   checkNoUncoveredCells,
   sweep
 } from './functions';
-import { GAME_STATUS, MAP_OBJECT, GameStatusValue } from './data/constants';
+import {
+  GAME_STATUS,
+  MAP_OBJECT,
+  GameStatusValue,
+  NUMBER_OF_CELLS_IN_A_ROW,
+  MINE_LIST
+} from './data/constants';
 
 export type DataMapType = (number|null)[]
 export interface ReducerStateProps {
@@ -15,10 +21,8 @@ export interface ReducerStateProps {
   totalCellsCount: number;
   totalMinesCount: number;
   hasCreatedMine: boolean;
+  token: string;
 }
-
-const NUMBER_OF_CELLS_IN_A_ROW = [9, 16, 24]
-const MINE_LIST = [10, 40, 99]
 
 export const ReducerActions = {
   SET_MAP_INDEX: 'action$set_map_index',
@@ -27,7 +31,8 @@ export const ReducerActions = {
   GENERATE_MINES: 'action$generate_mines',
   PUT_FLAG_ON_CELL: 'action$put_flag_on_cell',
   SWEEP_CELL: 'action$sweep_cell',
-  NEW_GAME: 'action$new_game'
+  NEW_GAME: 'action$new_game',
+  SET_TOKEN: 'action$set_token'
 } as const
 
 export type ReducerActionProps =
@@ -38,6 +43,7 @@ export type ReducerActionProps =
     | { type: typeof ReducerActions.PUT_FLAG_ON_CELL; payload: number }
     | { type: typeof ReducerActions.SWEEP_CELL; payload: number }
     | { type: typeof ReducerActions.NEW_GAME }
+    | { type: typeof ReducerActions.SET_TOKEN, payload: string }
 
 export const initReducer = (mapIndex: number): ReducerStateProps => {
   const totalCellsCount = Math.pow(NUMBER_OF_CELLS_IN_A_ROW[mapIndex], 2)
@@ -50,7 +56,8 @@ export const initReducer = (mapIndex: number): ReducerStateProps => {
     mapIndex: mapIndex,
     totalCellsCount,
     totalMinesCount,
-    hasCreatedMine: false
+    hasCreatedMine: false,
+    token: ''
   }
 }
 
@@ -64,6 +71,12 @@ const Reducer = (state: ReducerStateProps, action: ReducerActionProps) => {
   } = state
 
   switch (action.type) {
+    case ReducerActions.SET_TOKEN: {
+      return {
+        ...state,
+        token: action.payload
+      };
+    }
     case ReducerActions.NEW_GAME: {
       return initReducer(mapIndex);
     }
