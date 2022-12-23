@@ -18,8 +18,7 @@ export const fetchToken = async (size: number, mines: number): Promise<string> =
       mines,
     }
 
-    const { data, status } = await Axios.get<FetchTokenResponse>(HOST, { params })
-    console.log('response status is: ', status);
+    const { data } = await Axios.get<FetchTokenResponse>(HOST, { params })
     return data.token;
   } catch (error) {
     if (Axios.isAxiosError(error)) {
