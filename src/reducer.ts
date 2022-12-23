@@ -48,7 +48,7 @@ export type ReducerActionProps =
     | { type: typeof ReducerActions.GENERATE_MINES; payload: number }
     | { type: typeof ReducerActions.PUT_FLAG_ON_CELL; payload: number }
     | { type: typeof ReducerActions.SWEEP_CELL; payload: SweepParams }
-    | { type: typeof ReducerActions.NEW_GAME }
+    | { type: typeof ReducerActions.NEW_GAME, payload: string }
     | { type: typeof ReducerActions.SET_TOKEN, payload: string }
 
 export const initReducer = (mapIndex: number): ReducerStateProps => {
@@ -84,7 +84,10 @@ const Reducer = (state: ReducerStateProps, action: ReducerActionProps) => {
       };
     }
     case ReducerActions.NEW_GAME: {
-      return initReducer(mapIndex);
+      return {
+        ...initReducer(mapIndex),
+        token: action.payload
+      };
     }
     case ReducerActions.SET_MAP_INDEX: {
       return initReducer(action.payload);
